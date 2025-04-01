@@ -1,0 +1,92 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
+    color: #fff;
+}
+
+.blood-donations {
+    text-align: center;
+    padding: 50px 0;
+    background: linear-gradient(to right, #d00000, #800000);
+    border-radius: 10px;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+.stat-box {
+    background: #111;
+    padding: 20px;
+    border-radius: 10px;
+    width: 200px;
+}
+
+.stat-box h3 {
+    font-size: 1.8rem;
+    color: #ff0000;
+}
+
+.stat-box p {
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.cta-buttons {
+    margin: 20px 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.btn-donate {
+    background: #ff0000;
+    color: white;
+}
+
+.btn-register {
+    background: black;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+.sub-heading {
+    font-size: 1.5rem;
+    margin-top: 30px;
+}
+
+.camp-list {
+    list-style: none;
+    padding: 0;
+}
+
+.camp-list li {
+    font-size: 1.1rem;
+    margin: 5px 0;
+}

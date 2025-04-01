@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blood Donation Camps</title>
+</head>
+<body>
+    <h1>Upcoming Blood Donation Camps</h1>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Organizer</th>
+        </tr>
+        {% for camp in camps %}
+        <tr>
+            <td>{{ camp.name }}</td>
+            <td>{{ camp.location }}</td>
+            <td>{{ camp.date }}</td>
+            <td>{{ camp.time }}</td>
+            <td>{{ camp.organizer }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<section class="blood-donations">
+    <div class="container">
+        <h2 class="section-title">Save Lives, Donate Blood</h2>
+        <p class="section-subtitle">Your donation can save up to three lives.</p>
+
+        <div class="stats">
+            <div class="stat-box">
+                <h3 id="donors-count">711,531+</h3>
+                <p>Donors Registered</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="blood-units">7,872,200+</h3>
+                <p>Blood Units Collected</p>
+            </div>
+        </div>
+
+        <div class="cta-buttons">
+            <a href="#" class="btn btn-donate">Become a Donor</a>
+            <a href="#" class="btn btn-register">Register as a Donor</a>
+        </div>
+        {% for donor in donors %}
+    <p>{{ donor.name }} - {{ donor.blood_group }}</p>
+{% endfor %}
+
+        <h3 class="sub-heading">Upcoming Blood Donation Camps</h3>
+        <ul class="camp-list">
+            <li><strong>Varanasi</strong> – April 10, 2025</li>
+            <li><strong>Lucknow</strong> – April 15, 2025</li>
+            <li><strong>Nainital</strong> – April 20, 2025</li>
+        </ul>
+    </div>
+</section>

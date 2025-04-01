@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blood Donors</title>
+</head>
+<body>
+    <h1>Registered Blood Donors</h1>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Blood Group</th>
+            <th>Contact</th>
+        </tr>
+        {% for donor in donors %}
+        <tr>
+            <td>{{ donor.name }}</td>
+            <td>{{ donor.age }}</td>
+            <td>{{ donor.blood_group }}</td>
+            <td>{{ donor.contact_number }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
