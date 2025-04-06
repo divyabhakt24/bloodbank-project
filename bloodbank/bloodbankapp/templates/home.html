@@ -200,7 +200,7 @@
                 <a href="#">Home</a>
                 <a href="#">About</a>
                 <a href="#">Contact</a>
-                <a href="#" class="donate-btn">Donate</a>
+                <a href="{% url 'donate' %}" class="donate-btn">Donate</a>
             </div>
         </div>
     </nav>
@@ -209,8 +209,8 @@
     <div class="hero">
         <h1>TO GIVE IS HUMAN</h1>
         <p>One blood donation can save up to three lives.</p>
-        <a href="#" class="btn btn-warning btn-lg">Donate Now</a>
-    </div>
+          <a href="{% url 'donate' %}" class="donate-btn">Donate Now</a>
+         </div>
 <!-- Features Section -->
     {% include 'blood_donations.html' %}
 
@@ -240,8 +240,8 @@
             <div class="info-text">
                 <p><span class="highlight">One Blood Donation can save up to Three Lives</span></p>
                 <p>After donating blood, the body works to replenish the lost blood. This stimulates the production of new blood cells and helps maintain good health.</p>
-                <a href="#" class="donate-btn">Donate Now</a>
-            </div>
+                  <a href="{% url 'donate' %}" class="donate-btn">Donate Now</a>
+        </div>
         </div>
 
         <div class="table-container">

@@ -78,11 +78,16 @@ WSGI_APPLICATION = "bloodbank.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bloodbankdb',           # Your PostgreSQL database name
+        'USER': 'bloodbankuser',         # Your PostgreSQL username
+        'PASSWORD': 'bloodbank',      # The password you set earlier
+        'HOST': 'localhost',             # Or 127.0.0.1
+        'PORT': '5432',                  # Default PostgreSQL port
     }
 }
+
 
 
 # Password validation

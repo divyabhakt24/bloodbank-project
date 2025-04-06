@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse
 from .models import BloodDonor, BloodCamp
-
+from .forms import BloodDonorForm
 
 def home(request):
     return render(request, 'home.html')
@@ -43,3 +43,13 @@ def donor_list(request):
 def blood_camp_list(request):
     camps = BloodCamp.objects.all()  # Fetch all blood camps
     return render(request, 'bloodbank/blood_camp_list.html', {'camps': camps})
+
+def donate_view(request):
+    if request.method == 'POST':
+        form = BloodDonorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request, 'thank_you.html')  # or redirect
+    else:
+        form = BloodDonorForm()
+    return render(request, 'donate.html', {'form': form})
