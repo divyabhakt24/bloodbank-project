@@ -3,7 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse
 from .models import BloodDonor, BloodCamp
-from .forms import BloodDonorForm
+from .forms import DonationForm
+
 
 def home(request):
     return render(request, 'home.html')
@@ -38,18 +39,25 @@ def create_donor(request):
 
 def donor_list(request):
     donors = BloodDonor.objects.all()  # Fetch all donors
-    return render(request, 'bloodbank/donor_list.html', {'donors': donors})
+    return render(request, 'donor_list.html', {'donors': donors})
 
 def blood_camp_list(request):
     camps = BloodCamp.objects.all()  # Fetch all blood camps
-    return render(request, 'bloodbank/blood_camp_list.html', {'camps': camps})
+    return render(request, 'blood_camp_list.html')
 
-def donate_view(request):
+def donate(request):
     if request.method == 'POST':
-        form = BloodDonorForm(request.POST)
+        form = DonationForm(request.POST)
         if form.is_valid():
             form.save()
-            return render(request, 'thank_you.html')  # or redirect
+            return redirect('thank_you')  # Or wherever you want to redirect
     else:
-        form = BloodDonorForm()
+        form = DonationForm()
     return render(request, 'donate.html', {'form': form})
+
+def blood_bank_list(request):
+    return render(request, 'blood_camp_list.html')
+  # create this HTML file
+
+def hospital_list(request):
+    return render(request, 'hospital_list.html')  # create this HTML file
