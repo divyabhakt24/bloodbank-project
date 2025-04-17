@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     {% load static %}
     <meta charset="UTF-8">
@@ -7,104 +7,63 @@
     <title>Blood Bank | Save Lives</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #fff;
-            margin: 0;
-            padding: 0;
-        }
-        .navbar {
-            background: #6D133D;
-        }
-        .navbar-brand, .navbar a {
-            color: white !important;
-        }
-        .donate-btn {
-            background: #FF7A00;
-            color: white !important;
-            border-radius: 5px;
-            padding: 8px 16px;
-        }
-        .hero {
-            background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2zYVYq6_aGys-kURbEuh7omZy0LuLESJmaA&s') no-repeat center center/cover;
-            height: 90vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            color: white;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: bold;
-        }
-        .hero p {
-            font-size: 1.5rem;
-        }
-        .info-section, .info-box, .table-container, .donation-types {
-            margin: 40px auto;
-            max-width: 1100px;
-            padding: 20px;
-        }
-        .info-section img {
-            max-width: 300px;
-            border-radius: 10px;
-        }
-        .blood-table th {
-            background-color: #d60000;
-            color: white;
-        }
-        .highlight {
-            color: #d60000;
-            font-weight: bold;
-        }
-        .donor-section {
-            background-color: #f5f5f5;
-            padding: 40px 20px;
-            text-align: center;
-        }
-        .donor-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 10px;
-        }
-        .donor-card h5 {
-            color: #d60000;
-        }
-    </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="#">BloodBank</a>
-            <div>
-                <a href="#" class="nav-link d-inline">Home</a>
-                <a href="#" class="nav-link d-inline">About</a>
-                <a href="#" class="nav-link d-inline">Contact</a>
-                <a href="{% url 'donate' %}" class="donate-btn">Donate</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">BloodBank
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+   <span class="navbar-toggler-icon"></span>
+        </button></a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+        <li class="nav-item"><a class="nav-link donate-btn" href="{% url 'donate' %}">Donate</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+    <!-- Hero Carousel -->
+    <section class="hero d-flex align-items-center justify-content-center text-center">
+
+    <div class="hero" >
+        <div class="banner">
+<section class="hero-image">
+  <img src="{% static 'images/hero_banner.png' %}" alt="Banner" class="img-fluid">
+<section class="hero-image">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active hero">
+                <h1>TO GIVE IS HUMAN</h1>
+                <p>One blood donation can save up to three lives.</p>
+                <a href="{% url 'donate' %}" class="btn btn-warning">Donate Now</a>
+            </div>
+            <div class="carousel-item hero" >
+                <h1>Your Blood Matters</h1>
+                <p>Join our mission to save lives today.</p>
+                <a href="{% url 'donate' %}" class="btn btn-danger">Become a Hero</a>
             </div>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <div class="hero">
-        <h1>TO GIVE IS HUMAN</h1>
-        <p>One blood donation can save up to three lives.</p>
-        <a href="{% url 'donate' %}" class="btn btn-warning">Donate Now</a>
     </div>
-
+        </div>
+    </div>
+</section>
     <!-- Info Section -->
     <div class="container text-center mt-5">
         <h2 class="text-danger">Wants to Know About Blood Donation?</h2>
         <div class="row mt-4">
             <div class="col-md-6">
-                <img src="blood-donation.png" alt="Blood Donation" class="img-fluid rounded">
+                <img src="{% static 'images/blood-donation.png' %}" alt="Blood Donation" class="img-fluid rounded">
+
             </div>
             <div class="col-md-6 text-start">
                 <ul class="list-group list-group-flush">
@@ -140,59 +99,59 @@
             </tbody>
         </table>
     </div>
+
     <!-- Quick Access Section -->
-<section class="py-5 bg-light">
-    <div class="container text-center">
-        <h2 class="mb-4 text-danger">Explore Our Network</h2>
-        <div class="row g-4">
-            <div class="col-md-3">
-                <a href="{% url 'blood_camps' %}" class="text-decoration-none">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body">
-                            <i class="fas fa-calendar-alt fa-2x text-danger mb-3"></i>
-                            <h5 class="card-title">Blood Camps</h5>
-                            <p class="card-text">View upcoming and past blood donation camps.</p>
+    <section class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-4 text-danger">Explore Our Network</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <a href="{% url 'blood_camps' %}" class="text-decoration-none">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <i class="fas fa-calendar-alt fa-2x text-danger mb-3"></i>
+                                <h5 class="card-title">Blood Camps</h5>
+                                <p class="card-text">View upcoming and past blood donation camps.</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="{% url 'blood_banks' %}" class="text-decoration-none">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body">
-                            <i class="fas fa-tint fa-2x text-danger mb-3"></i>
-                            <h5 class="card-title">Blood Banks</h5>
-                            <p class="card-text">Find nearby blood banks and their stock status.</p>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'blood_banks' %}" class="text-decoration-none">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <i class="fas fa-tint fa-2x text-danger mb-3"></i>
+                                <h5 class="card-title">Blood Banks</h5>
+                                <p class="card-text">Find nearby blood banks and their stock status.</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="{% url 'donors_list' %}" class="text-decoration-none">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body">
-                            <i class="fas fa-users fa-2x text-danger mb-3"></i>
-                            <h5 class="card-title">Donors</h5>
-                            <p class="card-text">Explore our list of registered blood donors.</p>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'donors_list' %}" class="text-decoration-none">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <i class="fas fa-users fa-2x text-danger mb-3"></i>
+                                <h5 class="card-title">Donors</h5>
+                                <p class="card-text">Explore our list of registered blood donors.</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="{% url 'hospital_list' %}" class="text-decoration-none">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body">
-                            <i class="fas fa-hospital fa-2x text-danger mb-3"></i>
-                            <h5 class="card-title">Hospitals</h5>
-                            <p class="card-text">See partner hospitals requesting blood support.</p>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'hospital_list' %}" class="text-decoration-none">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <i class="fas fa-hospital fa-2x text-danger mb-3"></i>
+                                <h5 class="card-title">Hospitals</h5>
+                                <p class="card-text">See partner hospitals requesting blood support.</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-
+    </section>
 
     <!-- Types of Donation -->
     <div class="donation-types">
@@ -215,5 +174,60 @@
             {% endfor %}
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
+
+<!--Footer Section-->
+<footer class="custom-footer">
+  <div class="footer-top">
+    <div class="footer-col">
+      <h5>Looking for Blood</h5>
+      <ul>
+        <li><a href="#">Blood Availability</a></li>
+        <li><a href="#">Blood Bank Directory</a></li>
+        <li><a href="#">Thalassemia Request</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Want to Donate Blood</h5>
+      <ul>
+        <li><a href="#">Blood Donation Camps</a></li>
+        <li><a href="#">Donor Login</a></li>
+        <li><a href="#">About Blood Donation</a></li>
+        <li><a href="#">Register VBD Camp</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Blood Bank Login</h5>
+      <ul>
+        <li><a href="#">Login</a></li>
+        <li><a href="#">Add your Blood Bank</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>About Us</h5>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Notifications</a></li>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 Blood Bank. All rights reserved.</p>
+    <p>
+      <a href="#">Terms & Conditions</a> |
+      <a href="#">Privacy Policy</a> |
+      <a href="#">Accessibility</a>
+    </p>
+    <p>Last Updated: Apr 15, 2025</p>
+  </div>
+</footer>
+
+
 </html>
