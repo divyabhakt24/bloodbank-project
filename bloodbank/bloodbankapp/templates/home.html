@@ -1,233 +1,346 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blood Bank Management System - Donate blood, save lives">
     <title>Blood Bank | Save Lives</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <!-- Navbar -->
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="#">BloodBank
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-   <span class="navbar-toggler-icon"></span>
-        </button></a>
-    <div class="collapse navbar-collapse justify-content-end">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-        <li class="nav-item"><a class="nav-link donate-btn" href="{% url 'donate' %}">Donate</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-
-    <!-- Hero Carousel -->
-    <section class="hero d-flex align-items-center justify-content-center text-center">
-
-    <div class="hero" >
-        <div class="banner">
-<section class="hero-image">
-  <img src="{% static 'images/hero_banner.png' %}" alt="Banner" class="img-fluid">
-<section class="hero-image">
-    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active hero">
-                <h1>TO GIVE IS HUMAN</h1>
-                <p>One blood donation can save up to three lives.</p>
-                <a href="{% url 'donate' %}" class="btn btn-warning">Donate Now</a>
-            </div>
-            <div class="carousel-item hero" >
-                <h1>Your Blood Matters</h1>
-                <p>Join our mission to save lives today.</p>
-                <a href="{% url 'donate' %}" class="btn btn-danger">Become a Hero</a>
-            </div>
-        </div>
-    </div>
-        </div>
-    </div>
-</section>
-    <!-- Info Section -->
-    <div class="container text-center mt-5">
-        <h2 class="text-danger">Wants to Know About Blood Donation?</h2>
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <img src="{% static 'images/blood-donation.png' %}" alt="Blood Donation" class="img-fluid rounded">
-
-            </div>
-            <div class="col-md-6 text-start">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">💉 <strong>Being a Donor:</strong> Learn about blood donors.</li>
-                    <li class="list-group-item">💉 <strong>Eligibility Requirements:</strong> Check if you qualify.</li>
-                    <li class="list-group-item">💉 <strong>Donation Process:</strong> Steps for donating blood.</li>
-                    <li class="list-group-item">💉 <strong>Any Query:</strong> Get your questions answered.</li>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+                <i class="fas fa-heartbeat me-2"></i>BloodBank
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-light text-danger fw-bold ms-2"
+                                           href="{% url 'donate' %}">Donate Now</a></li>
                 </ul>
             </div>
         </div>
+    </nav>
+
+    <!-- Hero Carousel -->
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="hero-banner d-flex align-items-center justify-content-center text-center">
+                    <div class="hero-overlay"></div>
+                    <div class="container position-relative z-index-1">
+                        <h1 class="display-3 fw-bold mb-4">TO GIVE IS HUMAN</h1>
+                        <p class="lead  mb-5">One blood donation can save up to three lives.</p>
+                        <a href="{% url 'donate' %}" class="btn btn-warning btn-lg px-4">Donate Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="hero-banner d-flex align-items-center justify-content-center text-center">
+                    <div class="hero-overlay"></div>
+                    <div class="container position-relative z-index-1">
+                        <h1 class="display-3 fw-bold  mb-4">Your Blood Matters</h1>
+                        <p class="lead  mb-5">Join our mission to save lives today.</p>
+                        <a href="{% url 'donate' %}" class="btn btn-light btn-lg px-4">Become a Hero</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 
-    <!-- Compatibility Table -->
-    <div class="table-container">
-        <h3>Compatible Blood Type Donors</h3>
-        <table class="blood-table table table-bordered">
-            <thead>
-                <tr>
-                    <th>Blood Type</th>
-                    <th>Donate Blood To</th>
-                    <th>Receive Blood From</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>A+</td><td>A+, AB+</td><td>A+, A-, O+, O-</td></tr>
-                <tr><td>O+</td><td>O+, A+, B+, AB+</td><td>O+, O-</td></tr>
-                <tr><td>B+</td><td>B+, AB+</td><td>B+, B-, O+, O-</td></tr>
-                <tr><td>AB+</td><td>AB+</td><td>Everyone</td></tr>
-                <tr><td>A-</td><td>A+, A-, AB+, AB-</td><td>A-, O-</td></tr>
-                <tr><td>O-</td><td>Everyone</td><td>O-</td></tr>
-                <tr><td>B-</td><td>B+, B-, AB+, AB-</td><td>B-, O-</td></tr>
-                <tr><td>AB-</td><td>AB+, AB-</td><td>AB-, A-, B-, O-</td></tr>
-            </tbody>
-        </table>
-    </div>
+    <!-- Main Content -->
+    <main class="container-fluid px-0">
+        <!-- Info Section -->
+        <section class="py-5 bg-white">
+            <div class="container">
+                <h2 class="text-center text-danger mb-5">Want to Know About Blood Donation?</h2>
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <img src="{% static 'images/blood-donation.png' %}" alt="Blood donation process"
+                             class="img-fluid rounded shadow">
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body p-4">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item bg-transparent border-bottom py-3">
+                                        <i class="fas fa-user-plus text-danger me-3"></i>
+                                        <strong>Being a Donor:</strong> Learn about blood donors and their impact
+                                    </li>
+                                    <li class="list-group-item bg-transparent border-bottom py-3">
+                                        <i class="fas fa-check-circle text-danger me-3"></i>
+                                        <strong>Eligibility Requirements:</strong> Check if you qualify to donate
+                                    </li>
+                                    <li class="list-group-item bg-transparent border-bottom py-3">
+                                        <i class="fas fa-procedures text-danger me-3"></i>
+                                        <strong>Donation Process:</strong> Steps for donating blood safely
+                                    </li>
+                                    <li class="list-group-item bg-transparent py-3">
+                                        <i class="fas fa-question-circle text-danger me-3"></i>
+                                        <strong>Any Query:</strong> Get your questions answered by our experts
+                                    </li>
+                                </ul>
+                                <div class="text-center mt-4">
+                                    <a href="#" class="btn btn-outline-danger">Learn More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Quick Access Section -->
-    <section class="py-5 bg-light">
-        <div class="container text-center">
-            <h2 class="mb-4 text-danger">Explore Our Network</h2>
+        <!-- Blood Compatibility Section -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center text-danger mb-5">Blood Type Compatibility</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="bg-danger text-white">
+                            <tr>
+                                <th>Blood Type</th>
+                                <th>Can Donate To</th>
+                                <th>Can Receive From</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            <tr><td>A+</td><td>A+, AB+</td><td>A+, A-, O+, O-</td></tr>
+                            <tr><td>O+</td><td>O+, A+, B+, AB+</td><td>O+, O-</td></tr>
+                            <tr><td>B+</td><td>B+, AB+</td><td>B+, B-, O+, O-</td></tr>
+                            <tr><td>AB+</td><td>AB+</td><td>All Blood Types</td></tr>
+                            <tr><td>A-</td><td>A+, A-, AB+, AB-</td><td>A-, O-</td></tr>
+                            <tr><td>O-</td><td>All Blood Types</td><td>O-</td></tr>
+                            <tr><td>B-</td><td>B+, B-, AB+, AB-</td><td>B-, O-</td></tr>
+                            <tr><td>AB-</td><td>AB+, AB-</td><td>AB-, A-, B-, O-</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Links Section -->
+        <section class="py-5 bg-white">
+            <div class="container">
+                <h2 class="text-center text-danger mb-5">Explore Our Network</h2>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <a href="{% url 'blood_camps' %}" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm hover-effect">
+                                <div class="card-body text-center p-4">
+                                    <div class="icon-circle bg-danger mb-3 mx-auto">
+                                        <i class="fas fa-calendar-alt fa-2x text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">Blood Camps</h5>
+                                    <p class="card-text text-muted">Find upcoming donation events near you</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <a href="{% url 'blood_banks' %}" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm hover-effect">
+                                <div class="card-body text-center p-4">
+                                    <div class="icon-circle bg-danger mb-3 mx-auto">
+                                        <i class="fas fa-tint fa-2x text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">Blood Banks</h5>
+                                    <p class="card-text text-muted">Locate blood banks and check inventory</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <a href="{% url 'donors_list' %}" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm hover-effect">
+                                <div class="card-body text-center p-4">
+                                    <div class="icon-circle bg-danger mb-3 mx-auto">
+                                        <i class="fas fa-users fa-2x text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">Donors</h5>
+                                    <p class="card-text text-muted">Meet our community of life savers</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <a href="{% url 'hospital_list' %}" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm hover-effect">
+                                <div class="card-body text-center p-4">
+                                    <div class="icon-circle bg-danger mb-3 mx-auto">
+                                        <i class="fas fa-hospital fa-2x text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">Hospitals</h5>
+                                    <p class="card-text text-muted">Partner hospitals needing support</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Donation Types Section -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h2 class="text-danger mb-4">Types of Blood Donation</h2>
+                        <p class="lead">The human body contains around five liters of blood, consisting of different components:</p>
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="me-3 text-danger">
+                                <i class="fas fa-circle fa-lg"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Whole Blood</h5>
+                                <p class="mb-0">The most common type, containing all blood components</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="me-3 text-danger">
+                                <i class="fas fa-circle fa-lg"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Platelets</h5>
+                                <p class="mb-0">Helps cancer patients and those with blood disorders</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <div class="me-3 text-danger">
+                                <i class="fas fa-circle fa-lg"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Plasma</h5>
+                                <p class="mb-0">Used for trauma and burn patients</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mt-4 mt-lg-0">
+                        <img src="{% static 'images/blood-components.jpg' %}" alt="Blood components"
+                             class="img-fluid rounded shadow">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Donor Showcase -->
+        <section class="py-5 bg-white">
+            <div class="container">
+                <h2 class="text-center text-danger mb-5">Our Top Life Savers</h2>
+                <div class="row g-4">
+                    {% for donor in top_donors %}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center p-4">
+                                <div class="donor-badge bg-danger text-white rounded-circle mx-auto mb-3">
+                                    <i class="fas fa-heart fa-2x"></i>
+                                </div>
+                                <h5 class="card-title">{{ donor.user.get_full_name }}</h5>
+                                <p class="text-danger mb-1">
+                                    <strong>Blood Group:</strong> {{ donor.blood_type }}
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Donations:</strong> {{ donor.total_donations }}
+                                </p>
+                                <p class="mb-3">
+                                    <strong>Last Donation:</strong> {{ donor.last_donation_date|date:"M d, Y" }}
+                                </p>
+                                <a href="#" class="btn btn-sm btn-outline-danger">View Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'donors_list' %}" class="btn btn-danger">View All Donors</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-5 pb-4">
+        <div class="container">
             <div class="row g-4">
-                <div class="col-md-3">
-                    <a href="{% url 'blood_camps' %}" class="text-decoration-none">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <i class="fas fa-calendar-alt fa-2x text-danger mb-3"></i>
-                                <h5 class="card-title">Blood Camps</h5>
-                                <p class="card-text">View upcoming and past blood donation camps.</p>
-                            </div>
-                        </div>
-                    </a>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-uppercase mb-4">Looking for Blood</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50">Blood Availability</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Blood Bank Directory</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Emergency Requests</a></li>
+                        <li><a href="#" class="text-white-50">Thalassemia Request</a></li>
+                    </ul>
                 </div>
-                <div class="col-md-3">
-                    <a href="{% url 'blood_banks' %}" class="text-decoration-none">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <i class="fas fa-tint fa-2x text-danger mb-3"></i>
-                                <h5 class="card-title">Blood Banks</h5>
-                                <p class="card-text">Find nearby blood banks and their stock status.</p>
-                            </div>
-                        </div>
-                    </a>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-uppercase mb-4">Want to Donate</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50">Blood Donation Camps</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Donor Login</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">About Blood Donation</a></li>
+                        <li><a href="#" class="text-white-50">Register VBD Camp</a></li>
+                    </ul>
                 </div>
-                <div class="col-md-3">
-                    <a href="{% url 'donors_list' %}" class="text-decoration-none">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <i class="fas fa-users fa-2x text-danger mb-3"></i>
-                                <h5 class="card-title">Donors</h5>
-                                <p class="card-text">Explore our list of registered blood donors.</p>
-                            </div>
-                        </div>
-                    </a>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-uppercase mb-4">Blood Banks</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50">Bank Login</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Add your Blood Bank</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Inventory Management</a></li>
+                        <li><a href="#" class="text-white-50">Bank Registration</a></li>
+                    </ul>
                 </div>
-                <div class="col-md-3">
-                    <a href="{% url 'hospital_list' %}" class="text-decoration-none">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-body">
-                                <i class="fas fa-hospital fa-2x text-danger mb-3"></i>
-                                <h5 class="card-title">Hospitals</h5>
-                                <p class="card-text">See partner hospitals requesting blood support.</p>
-                            </div>
-                        </div>
-                    </a>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-uppercase mb-4">About Us</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50">Our Mission</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">FAQs</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Gallery</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50">Contact Us</a></li>
+                        <li><a href="#" class="text-white-50">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2025 BloodBank. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="social-icons">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <!-- Types of Donation -->
-    <div class="donation-types">
-        <h3>Types of Donation</h3>
-        <p>The human body contains around five liters of blood, consisting of different components such as <span class="highlight">Red Blood Cells</span>, <span class="highlight">Platelets</span>, and <span class="highlight">Plasma</span>.</p>
-        <p>Each component has unique properties and can be used for different medical treatments. A single donation can save multiple lives.</p>
-    </div>
-
-    <!-- Donor Showcase Section -->
-    <div class="donor-section">
-        <h2 class="text-danger mb-4">Meet Our Life Savers</h2>
-        <div class="row justify-content-center">
-            {% for donor in donors %}
-            <div class="col-md-3 donor-card">
-                <h5>{{ donor.name }}</h5>
-                <p><strong>Blood Group:</strong> {{ donor.blood_group }}</p>
-                <p><strong>Units Donated:</strong> {{ donor.units_donated }}</p>
-                <p><strong>Last Donation:</strong> {{ donor.last_donation_date }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
-
-
-<!--Footer Section-->
-<footer class="custom-footer">
-  <div class="footer-top">
-    <div class="footer-col">
-      <h5>Looking for Blood</h5>
-      <ul>
-        <li><a href="#">Blood Availability</a></li>
-        <li><a href="#">Blood Bank Directory</a></li>
-        <li><a href="#">Thalassemia Request</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Want to Donate Blood</h5>
-      <ul>
-        <li><a href="#">Blood Donation Camps</a></li>
-        <li><a href="#">Donor Login</a></li>
-        <li><a href="#">About Blood Donation</a></li>
-        <li><a href="#">Register VBD Camp</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Blood Bank Login</h5>
-      <ul>
-        <li><a href="#">Login</a></li>
-        <li><a href="#">Add your Blood Bank</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>About Us</h5>
-      <ul>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Notifications</a></li>
-        <li><a href="#">FAQs</a></li>
-        <li><a href="#">Gallery</a></li>
-        <li><a href="#">Contact Us</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="footer-bottom">
-    <p>© 2025 Blood Bank. All rights reserved.</p>
-    <p>
-      <a href="#">Terms & Conditions</a> |
-      <a href="#">Privacy Policy</a> |
-      <a href="#">Accessibility</a>
-    </p>
-    <p>Last Updated: Apr 15, 2025</p>
-  </div>
-</footer>
-
-
 </html>

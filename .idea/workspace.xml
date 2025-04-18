@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="778ac18e-a4bc-4347-a700-34c26d5873fc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbank/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbank/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/static/css/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
