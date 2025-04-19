@@ -40,6 +40,8 @@ INSTALLED_APPS = (
     "django.contrib.staticfiles",
     "bloodbankapp",
     'django_extensions',
+    'crispy_forms',
+    'crispy_bootstrap5'
 
 )
 
@@ -73,7 +75,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bloodbank.wsgi.application"
 
-
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 

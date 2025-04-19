@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ bank.name }}</h2>
+    <p>Location: {{ bank.city }}, {{ bank.state }}</p>
+    <p>Contact: {{ bank.phone }}</p>
+
+    <h3>Available Blood Groups:</h3>
+    <ul>
+        {% for group in bank.available_groups.all %}
+        <li>{{ group.name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

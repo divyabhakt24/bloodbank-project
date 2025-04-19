@@ -1,0 +1,39 @@
+<!-- bloodbankapp/templates/hospital_detail.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h2>{{ hospital.name }}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Address:</strong> {{ hospital.address }}</p>
+                    <p><strong>Phone:</strong> {{ hospital.phone }}</p>
+                    <p><strong>Email:</strong> {{ hospital.email|default:"Not provided" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h4>Available Blood Types</h4>
+                    <ul class="list-group">
+                        {% for blood_type in hospital.available_blood_types.all %}
+                        <li class="list-group-item">{{ blood_type }}</li>
+                        {% empty %}
+                        <li class="list-group-item">No blood type information available</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'hospital_list' %}" class="btn btn-secondary">
+                Back to Hospital List
+            </a>
+            <a href="{% url 'request_blood' hospital.id %}" class="btn btn-danger ms-2">
+                Request Blood
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

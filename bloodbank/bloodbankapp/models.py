@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
+from django.utils import timezone
+
 
 class BloodDonor(models.Model):
     BLOOD_GROUPS = [
@@ -20,6 +22,15 @@ class BloodDonor(models.Model):
     address = models.TextField()
     units_donated = models.PositiveIntegerField(default=0)
     last_donation_date = models.DateField(null=True, blank=True)
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other')
+    ]
+
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='O')
+    medical_history = models.TextField(blank=True)
+
 
     def __str__(self):
         return f"{self.name} ({self.blood_group})"
@@ -81,6 +92,14 @@ class BloodRequest(models.Model):
         ('Rejected', 'Rejected'),
         ('Fulfilled', 'Fulfilled')
     ]
+    URGENCY_CHOICES = [
+        ('normal', 'Normal'),
+        ('urgent', 'Urgent'),
+        ('critical', 'Critical')
+    ]
+
+    required_by = models.DateField(default=timezone.now() + timezone.timedelta(days=3))
+    urgency = models.CharField(max_length=10, choices=URGENCY_CHOICES, default='normal')
     status = models.CharField(max_length=10, choices=status_choices, default='Pending')
     fulfilled_by = models.ForeignKey(BloodBank, on_delete=models.SET_NULL, null=True, blank=True)
 

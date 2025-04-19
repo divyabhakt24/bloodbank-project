@@ -1,11 +1,157 @@
-<!-- hospital_list.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hospital List</title>
-</head>
-<body>
-    <h1>Hospital List Page</h1>
-    <p>This is a placeholder page for hospitals.</p>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Hospital Directory | Blood Bank{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Hospital Directory</h1>
+        <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#filterModal">
+            <i class="fas fa-filter"></i> Filter
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="GET" action="{% url 'hospital_list' %}">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" 
+                           placeholder="Search by hospital name or location..." 
+                           value="{{ request.GET.search }}">
+                    <button class="btn btn-outline-danger" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hospital Cards -->
+    <div class="row">
+        {% for hospital in hospitals %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="icon-circle bg-danger">
+                                <i class="fas fa-hospital text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="card-title">{{ hospital.name }}</h5>
+                            <p class="card-text text-muted mb-1">
+                                <i class="fas fa-map-marker-alt"></i> {{ hospital.address }}
+                            </p>
+                            <p class="card-text text-muted mb-1">
+                                <i class="fas fa-phone"></i> {{ hospital.phone }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+               <div class="card-footer bg-transparent border-0">
+                <a href="{% url 'hospital_detail' hospital.id %}" class="btn btn-sm btn-outline-danger">
+                    View Details
+                </a>
+                <a href="{% url 'request_blood' hospital.id %}" class="btn btn-sm btn-danger ms-2">
+                    Request Blood
+                </a>
+            </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-info">
+                No hospitals found. {% if request.GET.search %}Try a different search term.{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if hospitals.has_other_pages %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if hospitals.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1&search={{ request.GET.search }}" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ hospitals.previous_page_number }}&search={{ request.GET.search }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in hospitals.paginator.page_range %}
+                {% if hospitals.number == num %}
+                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}&search={{ request.GET.search }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if hospitals.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ hospitals.next_page_number }}&search={{ request.GET.search }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ hospitals.paginator.num_pages }}&search={{ request.GET.search }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filterModalLabel">Filter Hospitals</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" id="filterForm">
+                    <div class="mb-3">
+                        <label class="form-label">Blood Type Availability</label>
+                        <select class="form-select" name="blood_type">
+                            <option value="">All Blood Types</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <!-- Add other blood types -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Distance</label>
+                        <input type="range" class="form-range" min="1" max="100" name="distance">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="filterForm" class="btn btn-danger">Apply Filters</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Additional functionality can be added here
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize any hospital list specific JS
+});
+</script>
+{% endblock %}
