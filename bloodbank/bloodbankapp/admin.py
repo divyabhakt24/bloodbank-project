@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     BloodDonor, BloodCamp, BloodRequest, Donation,
-    Hospital, BloodBank
+    Hospital,BloodBank
 )
 from .admin_utis import ExportCsvMixin
 from django.utils.html import format_html
@@ -67,3 +67,5 @@ admin.site.register(Hospital, HospitalAdmin)
 admin.site.register(BloodBank, BloodBankAdmin)
 admin.site.register(BloodRequest, BloodRequestAdmin)
 admin.site.register(Donation, DonationAdmin)
+
+

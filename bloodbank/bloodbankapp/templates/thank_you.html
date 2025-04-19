@@ -1,10 +1,18 @@
 <!-- templates/thank_you.html -->
 <!DOCTYPE html>
 <html>
-<head><title>Thank You</title></head>
+<head>
+         {% extends 'base.html' %}  <!-- REQUIRED in every template -->
+{% load static %}
+
+    {% block title %}Thank You{% endblock %}
+
+</head>
 <body>
+{% block content %}
     <h2>Thank you for your donation!</h2>
     <p>Your contribution can save lives.</p>
     <a href="/" class="btn btn-primary">Back to Home</a>
+{% endblock %}
 </body>
 </html>

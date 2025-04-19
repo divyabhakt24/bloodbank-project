@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Donate Blood</title>
+    {% extends 'base.html' %}  <!-- REQUIRED in every template -->
+{% load static %}          <!-- REQUIRED only if using static files -->
+
+{% block title %}Donate Blood{% endblock %}
+
 </head>
 <body>
+{% block content %}
     <h2>Blood Donation Form</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Submit</button>
     </form>
+{% endblock %}
+
 </body>
 </html>

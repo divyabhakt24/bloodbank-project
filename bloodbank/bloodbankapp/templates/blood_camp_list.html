@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Blood Donation Camps</title>
+         {% extends 'base.html' %}  <!-- REQUIRED in every template -->
+{% load static %}
+
+    {% block title %}Blood Donation Camps{% endblock %}
+
 </head>
 <body>
+{% block content %}
     <h1>Upcoming Blood Donation Camps</h1>
     <table border="1">
         <tr>
@@ -23,5 +28,6 @@
         </tr>
         {% endfor %}
     </table>
+{% endblock %}
 </body>
 </html>

@@ -1,0 +1,23 @@
+<!-- bloodbankapp/templates/request_blood.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Blood Request | {{ hospital.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h2>Request Blood from {{ hospital.name }}</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-danger">Submit Request</button>
+                <a href="{% url 'hospital_detail' hospital.id %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
