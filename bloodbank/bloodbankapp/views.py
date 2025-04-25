@@ -171,3 +171,17 @@ def request_blood(request, hospital_id):
 
 def request_confirmation(request):
     return render(request, 'request_confirmation.html')
+
+def donor_detail(request, pk):
+    donor = get_object_or_404(BloodDonor, pk=pk)
+    return render(request, 'donor_detail.html', {'donor': donor})
+
+def donor_edit(request, pk):
+    donor = get_object_or_404(BloodDonor, pk=pk)
+    # Add your edit form logic here
+    return render(request, 'donor_edit.html', {'donor': donor})
+
+def request_donor(request, pk):
+    donor = get_object_or_404(BloodDonor, pk=pk)
+    # Add your request logic here
+    return render(request, 'request_donor.html', {'donor': donor})
