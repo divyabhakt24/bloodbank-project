@@ -26,8 +26,7 @@ urlpatterns = (
     path("admin/", admin.site.urls),
 
     path('main/', include('bloodbankapp.urls')),
-    path('', views.home, name='home'),
-
-)
+    path('', views.home, name='home')
+    )
 
 handler404 = 'bloodbank.views.handler404'

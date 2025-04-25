@@ -12,6 +12,20 @@ class BloodDonorForm(forms.ModelForm):
             MaxValueValidator(65, message="Donors must be younger than 65 years")
         ]
     )
+    BLOOD_GROUP_CHOICES = [
+        ('', '--- Select Blood Group ---'),
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+    ]
+    blood_group = forms.ChoiceField(
+        choices=BLOOD_GROUP_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}))
 
     class Meta:
         model = BloodDonor
