@@ -1,74 +1,75 @@
 {% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Blood Banks List{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h2 class="text-center mb-4">Available Blood Banks</h2>
+<div class="container">
+    <h1 class="my-4">Blood Bank Directory</h1>
 
-    <!-- Search and Filter Section -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <form method="GET" action="{% url 'bloodbank_list' %}">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="search" placeholder="Search by name or location..."
-                           value="{{ request.GET.search }}">
-                    <button class="btn btn-danger" type="submit">
-                        <i class="fas fa-search"></i> Search
-                    </button>
+    <!-- Search Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="form-inline">
+                <div class="form-group mr-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name..." value="{{ search_term }}">
                 </div>
-            </form>
-        </div>
-        <div class="col-md-6">
-            <form method="GET" action="{% url 'bloodbank_list' %}">
-                <div class="input-group">
-                    <select class="form-select" name="blood_group">
-                        <option value="">All Blood Groups</option>
-                        <option value="A+" {% if request.GET.blood_group == 'A+' %}selected{% endif %}>A+</option>
-                        <option value="A-" {% if request.GET.blood_group == 'A-' %}selected{% endif %}>A-</option>
-                        <!-- Add other blood groups (B+, B-, AB+, AB-, O+, O-) -->
+                <div class="form-group mr-3">
+                    <select name="city" class="form-control">
+                        <option value="">All Cities</option>
+                        {% for city in cities %}
+                        <option value="{{ city }}" {% if request.GET.city == city %}selected{% endif %}>{{ city }}</option>
+                        {% endfor %}
                     </select>
-                    <button class="btn btn-outline-danger" type="submit">Filter</button>
                 </div>
+                <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
     </div>
 
     <!-- Blood Banks Table -->
     <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
                 <tr>
-                    <th>#</th>
-                    <th>Blood Bank Name</th>
-                    <th>Location</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>District</th>
+                    <th>State</th>
+                    <th>Pincode</th>
                     <th>Contact</th>
-                    <th>Available Blood Groups</th>
-                    <th>Action</th>
+                    <th>Mobile</th>
+                    <th>Helpline</th>
+                    <th>Email</th>
+                    <th>Website</th>
+                    <th>License #</th>
                 </tr>
             </thead>
             <tbody>
                 {% for bank in bloodbanks %}
                 <tr>
-                    <td>{{ forloop.counter }}</td>
                     <td>{{ bank.name }}</td>
-                    <td>{{ bank.city }}, {{ bank.state }}</td>
-                    <td>{{ bank.phone }}</td>
+                    <td>{{ bank.address }}</td>
+                    <td>{{ bank.city }}</td>
+                    <td>{{ bank.district }}</td>
+                    <td>{{ bank.state }}</td>
+                    <td>{{ bank.pincode }}</td>
+                    <td>{{ bank.contact_number }}</td>
+                    <td>{{ bank.mobile }}</td>
+                    <td>{{ bank.helpline }}</td>
                     <td>
-                        {% for group in bank.available_groups.all %}
-                        <span class="badge bg-danger">{{ group.name }}</span>
-                        {% endfor %}
+                        {% if bank.email %}
+                        <a href="mailto:{{ bank.email }}">{{ bank.email }}</a>
+                        {% endif %}
                     </td>
                     <td>
-                        <a href="{% url 'bloodbank_detail' bank.id %}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-info-circle"></i> Details
-                        </a>
+                        {% if bank.website %}
+                        <a href="{{ bank.website }}" target="_blank">Website</a>
+                        {% endif %}
                     </td>
+                    <td>{{ bank.license_number }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="text-center py-4">No blood banks found.</td>
+                    <td colspan="12" class="text-center">No blood banks found</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -76,61 +77,34 @@
     </div>
 
     <!-- Pagination -->
-    {% if bloodbanks.has_other_pages %}
+    {% if bloodbanks.paginator.num_pages > 1 %}
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
             {% if bloodbanks.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page=1&search={{ request.GET.search }}&blood_group={{ request.GET.blood_group }}" aria-label="First">
-                    <span aria-hidden="true">&laquo;&laquo;</span>
-                </a>
+                <a class="page-link" href="?page=1&search={{ search_term }}&city={{ city }}">First</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.previous_page_number }}&search={{ request.GET.search }}&blood_group={{ request.GET.blood_group }}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
+                <a class="page-link" href="?page={{ bloodbanks.previous_page_number }}&search={{ search_term }}&city={{ city }}">Previous</a>
             </li>
             {% endif %}
 
-            {% for num in bloodbanks.paginator.page_range %}
-                {% if bloodbanks.number == num %}
-                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
-                {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}&search={{ request.GET.search }}&blood_group={{ request.GET.blood_group }}">{{ num }}</a></li>
-                {% endif %}
-            {% endfor %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Page {{ bloodbanks.number }} of {{ bloodbanks.paginator.num_pages }}
+                </span>
+            </li>
 
             {% if bloodbanks.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.next_page_number }}&search={{ request.GET.search }}&blood_group={{ request.GET.blood_group }}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
+                <a class="page-link" href="?page={{ bloodbanks.next_page_number }}&search={{ search_term }}&city={{ city }}">Next</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.paginator.num_pages }}&search={{ request.GET.search }}&blood_group={{ request.GET.blood_group }}" aria-label="Last">
-                    <span aria-hidden="true">&raquo;&raquo;</span>
-                </a>
+                <a class="page-link" href="?page={{ bloodbanks.paginator.num_pages }}&search={{ search_term }}&city={{ city }}">Last</a>
             </li>
             {% endif %}
         </ul>
     </nav>
     {% endif %}
 </div>
-{% endblock %}
-
-{% block scripts %}
-<!-- Additional JS if needed -->
-<script>
-    // Example: Confirm before deleting (if you add delete functionality)
-    document.addEventListener('DOMContentLoaded', function() {
-        const deleteButtons = document.querySelectorAll('.delete-btn');
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (!confirm('Are you sure you want to delete this blood bank?')) {
-                    e.preventDefault();
-                }
-            });
-        });
-    });
-</script>
 {% endblock %}

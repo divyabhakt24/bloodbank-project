@@ -1,23 +1,61 @@
-<!-- bloodbankapp/templates/request_blood.html -->
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Blood Request | {{ hospital.name }}{% endblock %}
+{% block title %}Request Blood{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="card">
-        <div class="card-header bg-danger text-white">
-            <h2>Request Blood from {{ hospital.name }}</h2>
+<div class="container my-4">
+    <h2 class="mb-4">Request Blood</h2>
+
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        <div class="row g-3">
+            <!-- Hospital Field -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.hospital.id_for_label }}" class="form-label">Hospital*</label>
+                    {{ form.hospital }}
+                </div>
+            </div>
+
+            <!-- Blood Group Field -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.blood_group.id_for_label }}" class="form-label">Blood Group*</label>
+                    {{ form.blood_group }}
+                </div>
+            </div>
+
+            <!-- Quantity Field -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.quantity_ml.id_for_label }}" class="form-label">Quantity (ml)*</label>
+                    {{ form.quantity_ml }}
+                </div>
+            </div>
+
+            <!-- Required By Field -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.required_by.id_for_label }}" class="form-label">Required By*</label>
+                    {{ form.required_by }}
+                </div>
+            </div>
+
+            <!-- Urgency Field -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.urgency.id_for_label }}" class="form-label">Urgency*</label>
+                    {{ form.urgency }}
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button type="submit" class="btn btn-danger">Submit Request</button>
-                <a href="{% url 'hospital_detail' hospital.id %}" class="btn btn-secondary">Cancel</a>
-            </form>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-danger me-2">Submit Request</button>
+            <a href="#" class="btn btn-secondary">Cancel</a>
         </div>
-    </div>
+    </form>
 </div>
 {% endblock %}
