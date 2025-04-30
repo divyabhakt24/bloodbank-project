@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator, RegexVa
 from django.utils import timezone
 
 
+
 class BloodDonor(models.Model):
     BLOOD_GROUPS = [
         ('A+', 'A+'), ('A-', 'A-'),
@@ -105,3 +106,10 @@ class BloodRequest(models.Model):
 
     def __str__(self):
         return f"{self.blood_group} - {self.quantity_ml}ml to {self.hospital.name}"
+
+    class BloodDonationCamp(models.Model):
+        name = models.CharField(max_length=255)
+        address = models.TextField()
+        latitude = models.FloatField()
+        longitude = models.FloatField()
+        date = models.DateField()
