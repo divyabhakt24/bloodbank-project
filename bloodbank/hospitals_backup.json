@@ -1,0 +1,32 @@
+[
+{
+  "model": "bloodbankapp.hospital",
+  "pk": 1,
+  "fields": {
+    "osm_id": null,
+    "name": "LokhBandu",
+    "location": "Lucknow",
+    "phone": "145357568",
+    "latitude": null,
+    "longitude": null,
+    "address": null,
+    "hospital_type": "general",
+    "last_updated": "2025-04-30T20:07:57.397Z"
+  }
+},
+{
+  "model": "bloodbankapp.hospital",
+  "pk": 2,
+  "fields": {
+    "osm_id": null,
+    "name": "Default Hospital",
+    "location": "",
+    "phone": "",
+    "latitude": null,
+    "longitude": null,
+    "address": null,
+    "hospital_type": "general",
+    "last_updated": "2025-04-30T20:07:57.397Z"
+  }
+}
+]

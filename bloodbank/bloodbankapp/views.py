@@ -7,7 +7,11 @@ from django.urls import reverse_lazy
 from .models import BloodDonor, BloodCamp, BloodBank, Hospital
 from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm
 from datetime import date
-import math
+from bloodbank.utils.geocoding import get_coordinates
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from bloodbank.utils.osm_utils import fetch_osm_hospitals
+from django.core.cache import cache
 
 
 def home(request):
@@ -243,3 +247,54 @@ def nearby_camps_view(request):
     map_html = m._repr_html_()
 
     return render(request, 'nearby_camps.html', {'map': map_html})
+
+
+def thank_you(request):
+    return render(request, 'thank_you.html')  # Make sure you have this template
+
+def add_bloodbank(request):
+    if request.method == "POST":
+        address = request.POST.get("address")
+        lat, lng = get_coordinates(address)
+        if lat and lng:
+            BloodBank.objects.create(
+                name=request.POST.get("name"),
+                address=address,
+                latitude=lat,
+                longitude=lng
+            )
+
+
+@api_view(['GET'])
+def nearby_hospitals(request):
+    location = request.GET.get('location', 'India')
+    cache_key = f'hospitals_{location}'
+
+    # Check cache first
+    hospitals = cache.get(cache_key)
+
+    if not hospitals:
+        # Fetch from OSM if not in cache
+        hospitals = fetch_osm_hospitals(location)
+        # Cache for 1 hour
+        cache.set(cache_key, hospitals, 3600)
+
+    return Response({
+        'location': location,
+        'count': len(hospitals),
+        'hospitals': hospitals[:20]  # Return first 20 for demo
+    })
+
+
+def hospital_map(request):
+    hospitals = Hospital.objects.all().order_by('name')
+
+    # Pagination for very large datasets
+    paginator = Paginator(hospitals, 500)  # Show 500 hospitals per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'hospitals/map.html', {
+        'hospitals': page_obj,
+        'page_obj': page_obj  # For pagination controls
+    })
