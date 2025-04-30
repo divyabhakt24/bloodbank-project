@@ -60,10 +60,20 @@ class HospitalAdmin(admin.ModelAdmin,ExportCsvMixin):
     search_fields = ['name', 'location']
     actions = ['export_as_csv']
 
+
+@admin.register(Hospital)
+class HospitalAdmin(admin.ModelAdmin):
+    list_display = ('name', 'hospital_type', 'city', 'phone')
+    list_filter = ('hospital_type',)
+    search_fields = ('name', 'address')
+
+    def city(self, obj):
+        return obj.address.split(',')[-1] if obj.address else "Unknown"
+
 # Registering all models with respective admin configs
 admin.site.register(BloodDonor, BloodDonorAdmin)
 admin.site.register(BloodCamp, BloodCampAdmin)
-admin.site.register(Hospital, HospitalAdmin)
+
 admin.site.register(BloodBank, BloodBankAdmin)
 admin.site.register(BloodRequest, BloodRequestAdmin)
 admin.site.register(Donation, DonationAdmin)

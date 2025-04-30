@@ -1,0 +1,155 @@
+<!-- bloodbankapp/templates/hospitals/map.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Map Column -->
+    <div class="col-md-8 p-0">
+      <div id="map" style="height: 100vh;"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-md-4 p-3">
+      <h2>Hospitals in India</h2>
+      <div class="mb-3">
+        <input type="text" class="form-control" id="search" placeholder="Search hospitals...">
+      </div>
+      <div id="hospital-list" style="max-height: 90vh; overflow-y: auto;">
+        {% for hospital in hospitals %}
+        <div class="card mb-2 hospital-card"
+             data-lat="{{ hospital.latitude }}"
+             data-lng="{{ hospital.longitude }}"
+             data-type="{{ hospital.hospital_type }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ hospital.name }}</h5>
+            <p class="card-text">
+              <small class="text-muted">
+                {{ hospital.hospital_type|title }}
+              </small>
+            </p>
+            {% if hospital.address %}
+            <p class="card-text">{{ hospital.address }}</p>
+            {% endif %}
+            <button class="btn btn-sm btn-primary view-on-map"
+                    data-lat="{{ hospital.latitude }}"
+                    data-lng="{{ hospital.longitude }}">
+              View on Map
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+<script>
+// Initialize Map
+const map = L.map('map').setView([20.5937, 78.9629], 5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// Create marker cluster group
+const markers = L.markerClusterGroup();
+
+// Hospital data from Django template
+const hospitals = [
+  {% for hospital in hospitals %}
+  {
+    id: {{ hospital.id }},
+    name: `{{ hospital.name|escapejs }}`,
+    lat: {{ hospital.latitude }},
+    lng: {{ hospital.longitude }},
+    address: `{{ hospital.address|default:""|escapejs }}`,
+    type: `{{ hospital.hospital_type|escapejs }}`
+  },
+  {% endfor %}
+];
+
+// Add markers to cluster group
+hospitals.forEach(hospital => {
+  const marker = L.marker([hospital.lat, hospital.lng])
+    .bindPopup(`
+      <b>${hospital.name}</b><br>
+      <small>${hospital.type}</small>
+      ${hospital.address ? `<p>${hospital.address}</p>` : ''}
+    `);
+  markers.addLayer(marker);
+});
+map.addLayer(markers);
+
+// Search functionality
+const fuse = new Fuse(hospitals, {
+  keys: ['name', 'address', 'type'],
+  threshold: 0.4
+});
+
+document.getElementById('search').addEventListener('input', (e) => {
+  const results = e.target.value ?
+    fuse.search(e.target.value).map(r => r.item) :
+    hospitals;
+
+  updateHospitalList(results);
+  updateMapMarkers(results);
+});
+
+// Update sidebar list
+function updateHospitalList(filteredHospitals) {
+  const list = document.getElementById('hospital-list');
+  list.innerHTML = '';
+
+  filteredHospitals.forEach(hospital => {
+    list.innerHTML += `
+      <div class="card mb-2 hospital-card"
+           data-lat="${hospital.lat}"
+           data-lng="${hospital.lng}"
+           data-type="${hospital.type}">
+        <div class="card-body">
+          <h5 class="card-title">${hospital.name}</h5>
+          <p class="card-text"><small>${hospital.type}</small></p>
+          ${hospital.address ? `<p>${hospital.text}">${hospital.address}</p>` : ''}
+          <button class="btn btn-sm btn-primary view-on-map"
+                  data-lat="${hospital.lat}"
+                  data-lng="${hospital.lng}">
+            View on Map
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  // Add event listeners to new buttons
+  document.querySelectorAll('.view-on-map').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const lat = parseFloat(this.dataset.lat);
+      const lng = parseFloat(this.dataset.lng);
+      map.flyTo([lat, lng], 15);
+    });
+  });
+}
+
+// Update map markers
+function updateMapMarkers(filteredHospitals) {
+  markers.clearLayers();
+
+  filteredHospitals.forEach(hospital => {
+    const marker = L.marker([hospital.lat, hospital.lng])
+      .bindPopup(`<b>${hospital.name}</b>`);
+    markers.addLayer(marker);
+  });
+
+  map.addLayer(markers);
+}
+</script>
+
+{% endblock %}

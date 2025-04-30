@@ -6,6 +6,6 @@ class DemoappConfig(AppConfig):
     name = "bloodbankapp"
 
 INSTALLED_APPS = [
-    ...
+
     'crispy_forms',
 ]

@@ -23,6 +23,7 @@ urlpatterns = [
     path('donors/<int:pk>/request/', views.request_donor, name='request_donor'),
     
     path('nearby-camps/', views.nearby_camps_view, name='nearby_camps'),
+    path('hospitals/map/', views.hospital_map, name='hospital-map'),
 
 
     # <-- create this view if not done
