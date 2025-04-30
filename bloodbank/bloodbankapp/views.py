@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from .models import BloodDonor, BloodCamp, BloodBank, Hospital
 from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm
 from datetime import date
+import math
 
 
 def home(request):
@@ -186,5 +187,59 @@ def request_donor(request, pk):
     # Add your request logic here
     return render(request, 'request_donor.html', {'donor': donor})
 
-def thank_you(request):
-    return render(request, 'thank_you.html')
+from django.shortcuts import render
+from .models import BloodDonationCamp
+import folium
+import math
+
+def haversine_distance(lat1, lon1, lat2, lon2):
+    # Calculate the great-circle distance between two points
+    R = 6371  # Earth radius in kilometers
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+
+    a = math.sin(delta_phi / 2) ** 2 + \
+        math.cos(phi1) * math.cos(phi2) * \
+        math.sin(delta_lambda / 2) ** 2
+
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    return R * c  # Distance in kilometers
+
+def nearby_camps_view(request):
+    user_lat = float(request.GET.get('lat', 0))
+    user_lon = float(request.GET.get('lon', 0))
+    radius_km = 10  # Define the radius to search within
+
+    # Filter camps within the specified radius
+    camps = []
+    for camp in BloodDonationCamp.objects.all():
+        distance = haversine_distance(user_lat, user_lon, camp.latitude, camp.longitude)
+        if distance <= radius_km:
+            camps.append((camp, distance))
+
+    # Create a Folium map centered at the user's location
+    m = folium.Map(location=[user_lat, user_lon], zoom_start=13)
+
+    # Add a marker for the user's location
+    folium.Marker(
+        [user_lat, user_lon],
+        tooltip='Your Location',
+        icon=folium.Icon(color='blue')
+    ).add_to(m)
+
+    # Add markers for each nearby camp
+    for camp, distance in camps:
+        folium.Marker(
+            [camp.latitude, camp.longitude],
+            tooltip=f"{camp.name} ({distance:.2f} km)",
+            popup=camp.address,
+            icon=folium.Icon(color='red')
+        ).add_to(m)
+
+    # Render the map as HTML
+    map_html = m._repr_html_()
+
+    return render(request, 'nearby_camps.html', {'map': map_html})

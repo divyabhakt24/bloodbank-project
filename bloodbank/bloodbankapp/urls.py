@@ -21,6 +21,9 @@ urlpatterns = [
     path('donors/<int:pk>/', views.donor_detail, name='donor_detail'),
     path('donors/<int:pk>/edit/', views.donor_edit, name='donor_edit'),
     path('donors/<int:pk>/request/', views.request_donor, name='request_donor'),
+    
+    path('nearby-camps/', views.nearby_camps_view, name='nearby_camps'),
+
 
     # <-- create this view if not done
 ]
