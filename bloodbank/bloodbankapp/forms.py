@@ -4,6 +4,12 @@ from .models import BloodDonor, Donation, BloodRequest
 from django.utils import timezone
 from datetime import date
 
+BLOOD_GROUP_CHOICES = [
+    ('A+', 'A+'), ('A-', 'A-'),
+    ('B+', 'B+'), ('B-', 'B-'),
+    ('AB+', 'AB+'), ('AB-', 'AB-'),
+    ('O+', 'O+'), ('O-', 'O-'),
+]
 
 class BloodDonorForm(forms.ModelForm):
     age = forms.IntegerField(
@@ -45,6 +51,7 @@ class DonationForm(forms.ModelForm):
         initial=date.today,
         widget=forms.DateInput(attrs={'type': 'date', 'max': date.today().isoformat()})
     )
+    blood_group = forms.ChoiceField(choices=BLOOD_GROUP_CHOICES)
 
     class Meta:
         model = Donation

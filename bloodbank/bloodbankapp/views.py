@@ -185,3 +185,6 @@ def request_donor(request, pk):
     donor = get_object_or_404(BloodDonor, pk=pk)
     # Add your request logic here
     return render(request, 'request_donor.html', {'donor': donor})
+
+def thank_you(request):
+    return render(request, 'thank_you.html')

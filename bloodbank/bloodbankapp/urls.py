@@ -16,7 +16,7 @@ urlpatterns = [
     path('donors/register/', DonorRegisterView.as_view(), name='donor_register'),
     path('request-blood/<int:hospital_id>/', request_blood, name='request_blood'),
     path('request-confirmation/', request_confirmation, name='request_confirmation'),
-
+    path('thank-you/', views.thank_you, name='thank_you'),
     path('donors/', donor_list, name='donor_list'),
     path('donors/<int:pk>/', views.donor_detail, name='donor_detail'),
     path('donors/<int:pk>/edit/', views.donor_edit, name='donor_edit'),
