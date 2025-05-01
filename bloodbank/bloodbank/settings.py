@@ -41,7 +41,8 @@ INSTALLED_APPS = (
     "bloodbankapp",
     'django_extensions',
     'crispy_forms',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
+    'rest_framework',
 
 )
 
@@ -82,9 +83,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bloodbankdatab',           # Your PostgreSQL database name
-        'USER': 'bloodbankuser',         # Your PostgreSQL username
-        'PASSWORD': 'dibiya',      # The password you set earlier
+        'NAME': 'bloodbankdatab',           # Your PostgreSQL database name bloodbankdb bloodbankdatab
+        'USER': 'bloodbankuser',         # Your PostgreSQL username bloodbankuser
+        'PASSWORD': 'dibiya',      # The password you set earlier bloodbank dibiya
         'HOST': 'localhost',             # Or 127.0.0.1
         'PORT': '5432',                  # Default PostgreSQL port
     }
@@ -135,3 +136,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+OSM_USER_AGENT = "bloodbank_app_v1" # Unique identifier for your app

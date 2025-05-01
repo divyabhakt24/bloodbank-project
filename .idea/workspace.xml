@@ -5,10 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="778ac18e-a4bc-4347-a700-34c26d5873fc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/donor_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbank/utils/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbank/utils/geocoder.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbank/utils/geocoding.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbank/utils/osm_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/geocode_banks.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/import_hospitals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/hospitals/map.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/BloodBank.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BloodBank.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbank/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbank/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbank/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbank/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/views.py" afterDir="false" />
     </list>
