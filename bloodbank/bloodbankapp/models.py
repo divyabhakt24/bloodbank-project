@@ -53,19 +53,74 @@ class BloodCamp(models.Model):
     def __str__(self):
         return f"{self.name} - {self.date}"
 
+
+from django.core.validators import URLValidator, EmailValidator
+from django.db import models
+
+
 class Hospital(models.Model):
-    name = models.CharField(max_length=100)
-    location = models.CharField(max_length=200)
-    contact_number = models.CharField(max_length=15)
+    HOSPITAL_TYPES = [
+        ('general', 'General Hospital'),
+        ('specialty', 'Specialty Hospital'),
+        ('teaching', 'Teaching Hospital'),
+        ('clinic', 'Clinic'),
+        ('government', 'Government Hospital'),
+        ('private', 'Private Hospital'),
+    ]
+
+    osm_id = models.BigIntegerField(unique=True, null=True, blank=True, help_text="OpenStreetMap ID")
+    name = models.CharField(max_length=255, null=True, blank=True)
+    hospital_type = models.CharField(
+        max_length=50,
+        choices=HOSPITAL_TYPES,
+        default='general',
+        null=True
+    )
+    address = models.TextField(blank=True, null=True)
+    state = models.CharField(max_length=50, blank=True, null=True)
+    district = models.CharField(max_length=50, blank=True, null=True)
+    pincode = models.CharField(max_length=10, blank=True, null=True)
+    phone = models.CharField(
+        max_length=30,
+        blank=True,
+        null=True,
+        help_text="Include country code if available"
+    )
+    email = models.EmailField(
+        blank=True,
+        null=True,
+        validators=[EmailValidator()]
+    )
+    website = models.URLField(
+        blank=True,
+        null=True,
+        validators=[URLValidator()],
+        help_text="Full website URL including https://"
+    )
+
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'Hospitals'
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.get_hospital_type_display()})"
+
+    @property
+    def coordinates(self):
+        return (self.latitude, self.longitude)
+
 
 class BloodBank(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=150)
     address = models.TextField()
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     capacity = models.IntegerField()
+    latitude = models.FloatField(null=True, blank=True)  # Add this
+    longitude = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -107,39 +162,9 @@ class BloodRequest(models.Model):
     def __str__(self):
         return f"{self.blood_group} - {self.quantity_ml}ml to {self.hospital.name}"
 
-class BloodDonationCamp(models.Model):
-    name = models.CharField(max_length=255)
-    address = models.TextField()
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-    date = models.DateField()
-
-    # Add to models.py
-
-class Disease(models.Model):
-        name = models.CharField(max_length=100)
-        description = models.TextField()
-        primary_season = models.CharField(max_length=50, choices=[
-            ('Winter', 'Winter'),
-            ('Summer', 'Summer'),
-            ('Monsoon', 'Monsoon'),
-            ('Spring', 'Spring'),
-            ('Autumn', 'Autumn'),
-        ])
-        blood_types_affected = models.CharField(max_length=200, help_text="Comma-separated blood types most needed")
-        avg_blood_requirement_ml = models.PositiveIntegerField(help_text="Average blood requirement per case in mL")
-
-        def __str__(self):
-            return self.name
-
-class SeasonalDemand(models.Model):
-        disease = models.ForeignKey(Disease, on_delete=models.CASCADE)
-        year = models.PositiveIntegerField()
-        season = models.CharField(max_length=50)
-        predicted_demand_increase = models.FloatField(help_text="Percentage increase in demand")
-        actual_demand_increase = models.FloatField(null=True, blank=True)
-        predicted_blood_types = models.CharField(max_length=200)
-        created_at = models.DateTimeField(auto_now_add=True)
-
-        def __str__(self):
-            return f"{self.disease.name} - {self.season} {self.year}"
+    class BloodDonationCamp(models.Model):
+        name = models.CharField(max_length=255)
+        address = models.TextField()
+        latitude = models.FloatField()
+        longitude = models.FloatField()
+        date = models.DateField()

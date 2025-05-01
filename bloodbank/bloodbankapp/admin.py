@@ -5,6 +5,8 @@ from .models import (
 )
 from .admin_utis import ExportCsvMixin
 from django.utils.html import format_html
+import requests
+
 
 
 class BloodDonorInline(admin.TabularInline):
@@ -60,10 +62,100 @@ class HospitalAdmin(admin.ModelAdmin,ExportCsvMixin):
     search_fields = ['name', 'location']
     actions = ['export_as_csv']
 
+
+@admin.register(Hospital)
+class HospitalAdmin(admin.ModelAdmin):
+    list_display = ('name', 'hospital_type', 'address', 'state', 'phone', 'map_link')
+    list_filter = ('hospital_type', 'state')
+    search_fields = ('name', 'address', 'district', 'pincode')
+    list_per_page = 50
+    actions = ['fetch_osm_data']
+    readonly_fields = ('last_updated', 'osm_id')
+
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'hospital_type')
+        }),
+        ('Location', {
+            'fields': ('address', 'state', 'district', 'pincode',
+                       ('latitude', 'longitude'), 'osm_id')
+        }),
+        ('Contact', {
+            'fields': ('phone', 'email', 'website')
+        }),
+        ('Metadata', {
+            'fields': ('last_updated',)
+        })
+    )
+
+    def city(self, obj):
+        """Extract city from address"""
+        if obj.district:
+            return obj.district
+        if obj.address:
+            parts = [p.strip() for p in obj.address.split(',')]
+            return parts[-2] if len(parts) > 1 else parts[-1]
+        return "Unknown"
+
+    city.short_description = 'City/District'
+
+    def phone_display(self, obj):
+        """Formatted phone number with country code"""
+        if not obj.phone:
+            return "-"
+        phone = obj.phone
+        return f"+91 {phone[:5]} {phone[5:]}" if len(phone) == 10 else phone
+
+    phone_display.short_description = 'Phone'
+
+    def map_link(self, obj):
+        """Google Maps link if coordinates exist"""
+        if obj.latitude and obj.longitude:
+            url = f"https://www.google.com/maps?q={obj.latitude},{obj.longitude}"
+            return format_html('<a href="{}" target="_blank">View Map</a>', url)
+        return "-"
+
+    map_link.short_description = 'Map'
+
+    def fetch_osm_data(self, request, queryset):
+        """Admin action to fetch missing data from OSM"""
+        from django.contrib import messages
+        for hospital in queryset.filter(osm_id__isnull=False):
+            try:
+                response = requests.get(
+                    f"https://api.openstreetmap.org/api/0.6/node/{hospital.osm_id}",
+                    timeout=5
+                )
+                if response.status_code == 200:
+                    # Add your OSM data parsing logic here
+                    pass
+            except requests.RequestException as e:
+                messages.warning(request, f"Failed to fetch OSM data: {str(e)}")
+        self.message_user(request, f"Updated {queryset.count()} hospitals")
+
+    fetch_osm_data.short_description = "Fetch OSM data"
+
+    def get_urls(self):
+        """Add custom admin views"""
+        from django.urls import path
+        urls = super().get_urls()
+        custom_urls = [
+            path('import-osm/', self.admin_site.admin_view(self.import_osm_view), name='import_osm'),
+        ]
+        return custom_urls + urls
+
+    def import_osm_view(self, request):
+        """Custom view for bulk OSM import"""
+        if request.method == 'POST':
+            # Handle form submission
+            return redirect('..')
+        from django.shortcuts import render
+        context = self.admin_site.each_context(request)
+        return render(request, 'admin/hospitals/import_osm.html', context)
+
 # Registering all models with respective admin configs
 admin.site.register(BloodDonor, BloodDonorAdmin)
 admin.site.register(BloodCamp, BloodCampAdmin)
-admin.site.register(Hospital, HospitalAdmin)
 admin.site.register(BloodBank, BloodBankAdmin)
 admin.site.register(BloodRequest, BloodRequestAdmin)
 admin.site.register(Donation, DonationAdmin)
