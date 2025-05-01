@@ -1,79 +1,86 @@
 from django.core.management.base import BaseCommand
-from bloodbank.utils.osm_utils import fetch_osm_hospitals
+import pandas as pd
 from bloodbankapp.models import Hospital
-from django.utils.timezone import now
 
 
 class Command(BaseCommand):
-    help = 'Import hospitals from OpenStreetMap'
-
-    def add_arguments(self, parser):
-        parser.add_argument(
-            '--location',
-            type=str,
-            default='Mumbai',
-            help='City/region to search for hospitals'
-        )
-        parser.add_argument(
-            '--type',
-            type=str,
-            default=None,
-            help='Filter by hospital type (e.g., blood_bank)'
-        )
+    help = 'Import hospitals with field length validation'
 
     def handle(self, *args, **options):
-        location = options['location']
-        hospital_type = options['type']
+        csv_path = 'bloodbankapp/data/imports/hospitals.csv'
 
-        filters = {}
-        if hospital_type:
-            filters['healthcare'] = hospital_type
+        try:
+            df = pd.read_csv(csv_path)
 
-        hospitals = fetch_osm_hospitals(location, filters)
+            # Get max lengths from model
+            field_max_lengths = {
+                'name': 100,
+                'address': 200,
+                'phone': 20,
+                'email': 100,
+                'hospital_type': 50,
+                'state': 50,
+                'district': 50,
+                'pincode': 10,
+                'website': 200
+            }
 
-        if not hospitals:
-            self.stdout.write(self.style.ERROR('No hospitals found!'))
-            return
+            hospitals = []
+            skipped = 0
 
-        created_count = 0
-        for hospital in hospitals:
-            _, created = Hospital.objects.update_or_create(
-                osm_id=hospital['osm_id'],
-                defaults={
-                    'name': hospital['name'],
-                    'latitude': hospital['latitude'],
-                    'longitude': hospital['longitude'],
-                    'address': hospital['address'],
-                    'hospital_type': hospital['type'],
-                    'phone': hospital['phone']
+            for _, row in df.iterrows():
+                # Prepare data with length validation
+                hospital_data = {
+                    'name': self._clean_field(row['Name'], field_max_lengths['name']),
+                    'address': self._clean_field(row['Address'], field_max_lengths['address']),
+                    'phone': self._clean_field(row['telephone'], field_max_lengths['phone']),
+                    'email': self._clean_field(row['Email'], field_max_lengths['email']) if pd.notna(
+                        row['Email']) else '',
+                    'hospital_type': self._clean_field(row['Hospital_Type'], field_max_lengths['hospital_type']),
+                    'state': self._clean_field(row['state'], field_max_lengths['state']),
+                    'district': self._clean_field(row['district'], field_max_lengths['district']),
+                    'pincode': self._clean_field(row['pincode'], field_max_lengths['pincode']),
+                    'website': self._clean_field(row['website'], field_max_lengths['website']) if pd.notna(
+                        row['website']) else '',
+                    'latitude': self._clean_coordinate(row['latitude']),
+                    'longitude': self._clean_coordinate(row['Longitude'])
                 }
-            )
-            if created:
-                created_count += 1
 
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Successfully processed {len(hospitals)} hospitals. "
-                f"Created {created_count} new entries."
-            )
-        )
+                # Skip if required fields are invalid
+                if not all([hospital_data['name'], hospital_data['address'], hospital_data['phone']]):
+                    skipped += 1
+                    continue
 
-    def handle(self, *args, **options):
-        hospitals = fetch_osm_hospitals(options['location'])
+                hospitals.append(Hospital(**hospital_data))
 
-        for hospital in hospitals:
-            # Clean None values
-            hospital['address'] = hospital.get('address') or "Address not available"
-            hospital['phone'] = hospital.get('phone') or "Not listed"
+            # Import in batches of 500 for better performance
+            batch_size = 500
+            for i in range(0, len(hospitals), batch_size):
+                Hospital.objects.bulk_create(hospitals[i:i + batch_size])
 
-            Hospital.objects.update_or_create(
-                osm_id=hospital['osm_id'],
-                defaults={
-                    'name': hospital['name'],
-                    'latitude': hospital['latitude'],
-                    'longitude': hospital['longitude'],
-                    'address': hospital['address'],
-                    'phone': hospital['phone'],
-                    'hospital_type': hospital['type']
-                }
-            )
+            self.stdout.write(self.style.SUCCESS(
+                f'Successfully imported {len(hospitals)} hospitals\n'
+                f'Skipped {skipped} invalid records\n'
+                f'Sample imported record:\n'
+                f'Name: {hospitals[0].name}\n'
+                f'Phone: {hospitals[0].phone}'
+            ))
+
+        except Exception as e:
+            self.stderr.write(self.style.ERROR(f'Import failed: {str(e)}'))
+
+    def _clean_field(self, value, max_length):
+        """Clean and truncate string fields"""
+        if pd.isna(value):
+            return ''
+        value = str(value).strip()
+        return value[:max_length]
+
+    def _clean_coordinate(self, coord):
+        """Clean coordinate values"""
+        if pd.isna(coord):
+            return None
+        try:
+            return float(str(coord).replace('°', '').replace("'", "").replace('"', ''))
+        except ValueError:
+            return None

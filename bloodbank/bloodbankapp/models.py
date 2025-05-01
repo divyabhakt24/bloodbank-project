@@ -53,24 +53,61 @@ class BloodCamp(models.Model):
     def __str__(self):
         return f"{self.name} - {self.date}"
 
+
+from django.core.validators import URLValidator, EmailValidator
+from django.db import models
+
+
 class Hospital(models.Model):
-    osm_id = models.BigIntegerField(unique=True, null=True)
-    name = models.CharField(max_length=100)
-    location = models.CharField(max_length=200)
-    phone = models.CharField(max_length=15)
+    HOSPITAL_TYPES = [
+        ('general', 'General Hospital'),
+        ('specialty', 'Specialty Hospital'),
+        ('teaching', 'Teaching Hospital'),
+        ('clinic', 'Clinic'),
+        ('government', 'Government Hospital'),
+        ('private', 'Private Hospital'),
+    ]
+
+    osm_id = models.BigIntegerField(unique=True, null=True, blank=True, help_text="OpenStreetMap ID")
+    name = models.CharField(max_length=255, null=True, blank=True)
+    hospital_type = models.CharField(
+        max_length=50,
+        choices=HOSPITAL_TYPES,
+        default='general',
+        null=True
+    )
+    address = models.TextField(blank=True, null=True)
+    state = models.CharField(max_length=50, blank=True, null=True)
+    district = models.CharField(max_length=50, blank=True, null=True)
+    pincode = models.CharField(max_length=10, blank=True, null=True)
+    phone = models.CharField(
+        max_length=30,
+        blank=True,
+        null=True,
+        help_text="Include country code if available"
+    )
+    email = models.EmailField(
+        blank=True,
+        null=True,
+        validators=[EmailValidator()]
+    )
+    website = models.URLField(
+        blank=True,
+        null=True,
+        validators=[URLValidator()],
+        help_text="Full website URL including https://"
+    )
+
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
-    hospital_type = models.CharField(max_length=50, default='general')
     last_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['name']
-        verbose_name = 'Hospital'
         verbose_name_plural = 'Hospitals'
 
     def __str__(self):
-        return f"{self.name} ({self.hospital_type})"
+        return f"{self.name} ({self.get_hospital_type_display()})"
 
     @property
     def coordinates(self):
@@ -78,7 +115,7 @@ class Hospital(models.Model):
 
 
 class BloodBank(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=150)
     address = models.TextField()
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     capacity = models.IntegerField()
