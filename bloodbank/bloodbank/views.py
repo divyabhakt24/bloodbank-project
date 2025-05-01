@@ -10,3 +10,4 @@ def handler404(request,exception):
 
 def home(request):
     return render(request, 'home.html')
+

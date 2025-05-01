@@ -107,9 +107,39 @@ class BloodRequest(models.Model):
     def __str__(self):
         return f"{self.blood_group} - {self.quantity_ml}ml to {self.hospital.name}"
 
-    class BloodDonationCamp(models.Model):
-        name = models.CharField(max_length=255)
-        address = models.TextField()
-        latitude = models.FloatField()
-        longitude = models.FloatField()
-        date = models.DateField()
+class BloodDonationCamp(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.TextField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    date = models.DateField()
+
+    # Add to models.py
+
+class Disease(models.Model):
+        name = models.CharField(max_length=100)
+        description = models.TextField()
+        primary_season = models.CharField(max_length=50, choices=[
+            ('Winter', 'Winter'),
+            ('Summer', 'Summer'),
+            ('Monsoon', 'Monsoon'),
+            ('Spring', 'Spring'),
+            ('Autumn', 'Autumn'),
+        ])
+        blood_types_affected = models.CharField(max_length=200, help_text="Comma-separated blood types most needed")
+        avg_blood_requirement_ml = models.PositiveIntegerField(help_text="Average blood requirement per case in mL")
+
+        def __str__(self):
+            return self.name
+
+class SeasonalDemand(models.Model):
+        disease = models.ForeignKey(Disease, on_delete=models.CASCADE)
+        year = models.PositiveIntegerField()
+        season = models.CharField(max_length=50)
+        predicted_demand_increase = models.FloatField(help_text="Percentage increase in demand")
+        actual_demand_increase = models.FloatField(null=True, blank=True)
+        predicted_blood_types = models.CharField(max_length=200)
+        created_at = models.DateTimeField(auto_now_add=True)
+
+        def __str__(self):
+            return f"{self.disease.name} - {self.season} {self.year}"
