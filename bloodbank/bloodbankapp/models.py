@@ -115,12 +115,28 @@ class Hospital(models.Model):
 
 
 class BloodBank(models.Model):
-    name = models.CharField(max_length=150)
-    address = models.TextField()
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
-    capacity = models.IntegerField()
-    latitude = models.FloatField(null=True, blank=True)  # Add this
-    longitude = models.FloatField(null=True, blank=True)
+    name = models.CharField(max_length=150,null=True, blank=True)
+    state = models.TextField(max_length=20,null=True,blank=True)
+    district = models.TextField(max_length=30,null=True,blank=True)
+    address = models.TextField(null=True, blank=True)
+    pincode = models.BigIntegerField (blank=True,null=True)
+
+    mobile = models.BigIntegerField(blank=True,null=True)
+    email = models.EmailField(
+        blank=True,
+        null=True,
+        validators=[EmailValidator()]
+    )
+    website = models.URLField(
+        blank=True,
+        null=True,
+        validators=[URLValidator()],
+        help_text="Full website URL including https://"
+    )
+    category = models.TextField(blank=True,null=True)
+    blood_component_available = models.TextField(blank=True,null=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return self.name
