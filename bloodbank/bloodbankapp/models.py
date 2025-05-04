@@ -162,7 +162,7 @@ class BloodRequest(models.Model):
     def __str__(self):
         return f"{self.blood_group} - {self.quantity_ml}ml to {self.hospital.name}"
 
-    class BloodDonationCamp(models.Model):
+class BloodDonationCamp(models.Model):
         name = models.CharField(max_length=255)
         address = models.TextField()
         latitude = models.FloatField()

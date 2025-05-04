@@ -80,17 +80,20 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+from decouple import config
+
+from decouple import config
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bloodbankdatab',           # Your PostgreSQL database name bloodbankdb bloodbankdatab
-        'USER': 'bloodbankuser',         # Your PostgreSQL username bloodbankuser
-        'PASSWORD': 'dibiya',      # The password you set earlier bloodbank dibiya
-        'HOST': 'localhost',             # Or 127.0.0.1
-        'PORT': '5432',                  # Default PostgreSQL port
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
-
 
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -142,3 +145,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 OSM_USER_AGENT = "bloodbank_app_v1" # Unique identifier for your app
+
+#sam added
+
+
+
+
