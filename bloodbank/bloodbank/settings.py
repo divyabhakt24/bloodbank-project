@@ -83,9 +83,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bloodbankdatab',           # Your PostgreSQL database name bloodbankdb bloodbankdatab
+        'NAME': 'bloodbankdb',           # Your PostgreSQL database name bloodbankdb bloodbankdatab
         'USER': 'bloodbankuser',         # Your PostgreSQL username bloodbankuser
-        'PASSWORD': 'dibiya',      # The password you set earlier bloodbank dibiya
+        'PASSWORD': 'bloodbank',      # The password you set earlier bloodbank dibiya
         'HOST': 'localhost',             # Or 127.0.0.1
         'PORT': '5432',                  # Default PostgreSQL port
     }
