@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
-from django.utils import timezone
+
+from django.contrib.auth.models import User
 
 
 
@@ -113,6 +114,13 @@ class Hospital(models.Model):
     def coordinates(self):
         return (self.latitude, self.longitude)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'address'],
+                name='unique_hospital_name_address'
+            )
+        ]
 
 class BloodBank(models.Model):
     name = models.CharField(max_length=150,null=True, blank=True)
@@ -153,30 +161,40 @@ class Donation(models.Model):
     def __str__(self):
         return f"Donation by {self.donor.name} on {self.date}"
 
+
 class BloodRequest(models.Model):
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
-    blood_group = models.CharField(max_length=5)
-    quantity_ml = models.PositiveIntegerField()
-    request_date = models.DateField(auto_now_add=True)
-    status_choices = [
-        ('Pending', 'Pending'),
-        ('Approved', 'Approved'),
-        ('Rejected', 'Rejected'),
-        ('Fulfilled', 'Fulfilled')
-    ]
-    URGENCY_CHOICES = [
-        ('normal', 'Normal'),
-        ('urgent', 'Urgent'),
-        ('critical', 'Critical')
+    BLOOD_TYPES = [
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
     ]
 
-    required_by = models.DateField(default=timezone.now() + timezone.timedelta(days=3))
-    urgency = models.CharField(max_length=10, choices=URGENCY_CHOICES, default='normal')
-    status = models.CharField(max_length=10, choices=status_choices, default='Pending')
-    fulfilled_by = models.ForeignKey(BloodBank, on_delete=models.SET_NULL, null=True, blank=True)
+    URGENCY_LEVELS = [
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('critical', 'Critical'),
+    ]
+
+    requester = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    blood_type = models.CharField(max_length=3, choices=BLOOD_TYPES, null=True)
+    units = models.PositiveIntegerField(null=True)
+    urgency = models.CharField(max_length=10, choices=URGENCY_LEVELS, default='medium', null=True)
+    contact_number = models.CharField(max_length=15, null=True)
+    email = models.EmailField(null=True, blank=True)  # Add this line
+    request_date = models.DateTimeField(auto_now_add=True, null=True)
+    hospital = models.CharField(max_length=100, null=True)
+    fulfilled = models.BooleanField(default=False, null=True)
+    notes = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=20, default='pending')  # Add status field
 
     def __str__(self):
-        return f"{self.blood_group} - {self.quantity_ml}ml to {self.hospital.name}"
+        return f"{self.blood_type} request ({self.units} units)"
 
 class BloodDonationCamp(models.Model):
         name = models.CharField(max_length=255)
@@ -184,3 +202,12 @@ class BloodDonationCamp(models.Model):
         latitude = models.FloatField()
         longitude = models.FloatField()
         date = models.DateField()
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bank = models.ForeignKey('BloodBank', on_delete=models.SET_NULL, null=True, blank=True)
+    hospital = models.ForeignKey('Hospital', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username

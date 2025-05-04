@@ -71,29 +71,23 @@ class DonationForm(forms.ModelForm):
 
 
 class BloodRequestForm(forms.ModelForm):
-    required_by = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date', 'min': date.today().isoformat()})
-    )
-
     class Meta:
         model = BloodRequest
-        fields = ['hospital', 'blood_group', 'quantity_ml', 'required_by', 'urgency']
+        fields = ['blood_type', 'units', 'urgency', 'contact_number', 'notes']  # Removed email
         widgets = {
-            'hospital': forms.Select(attrs={'class': 'form-select'}),
-            'blood_group': forms.Select(attrs={'class': 'form-select'}),
-            'urgency': forms.Select(choices=[
-                ('normal', 'Normal'),
-                ('urgent', 'Urgent'),
-                ('critical', 'Critical')
-            ], attrs={'class': 'form-select'}),
+            'blood_type': forms.Select(attrs={'class': 'form-select'}),
+            'units': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 1,
+                'max': 10
+            }),
+            'urgency': forms.Select(attrs={'class': 'form-select'}),
+            'contact_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'notes': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3
+            }),
         }
-
-    def clean_required_by(self):
-        required_date = self.cleaned_data['required_by']
-        if required_date < date.today():
-            raise forms.ValidationError("Required date cannot be in the past")
-        return required_date
-
 
 class DonorRegistrationForm(forms.ModelForm):
     confirm_email = forms.EmailField(label="Confirm Email")
@@ -140,3 +134,11 @@ class DonorRegistrationForm(forms.ModelForm):
             self.add_error('age', "Donors must be at least 18 years old")
 
         return cleaned_data
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
