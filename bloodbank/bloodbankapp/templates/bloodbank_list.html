@@ -1,79 +1,124 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blood Bank Directory{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid">
     <h1 class="my-4">Blood Bank Directory</h1>
 
-    <!-- Search Form -->
+    <!-- Search and Location Controls -->
     <div class="card mb-4">
         <div class="card-body">
-            <form method="get" class="form-inline">
-                <div class="form-group mr-3">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
                     <input type="text" name="search" class="form-control" placeholder="Search by name..." value="{{ search_term }}">
                 </div>
-                <div class="form-group mr-3">
-                    <select name="city" class="form-control">
-                        <option value="">All Cities</option>
-                        {% for city in cities %}
-                        <option value="{{ city }}" {% if request.GET.city == city %}selected{% endif %}>{{ city }}</option>
+
+                <div class="col-md-2">
+                    <select name="state" class="form-control">
+                        <option value="">All States</option>
+                        {% for state in states %}
+                        <option value="{{ state }}" {% if request.GET.state == state %}selected{% endif %}>{{ state }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Search</button>
+                <div class="col-md-3">
+                    <button type="button" id="sortByDistance" class="btn btn-outline-danger w-100">
+                        <i class="fas fa-location-arrow"></i> Sort by Distance
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Blood Banks Table -->
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>City</th>
-                    <th>District</th>
-                    <th>State</th>
-                    <th>Pincode</th>
-                    <th>Contact</th>
-                    <th>Mobile</th>
-                    <th>Helpline</th>
-                    <th>Email</th>
-                    <th>Website</th>
-                    <th>License #</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for bank in bloodbanks %}
-                <tr>
-                    <td>{{ bank.name }}</td>
-                    <td>{{ bank.address }}</td>
-                    <td>{{ bank.city }}</td>
-                    <td>{{ bank.district }}</td>
-                    <td>{{ bank.state }}</td>
-                    <td>{{ bank.pincode }}</td>
-                    <td>{{ bank.contact_number }}</td>
-                    <td>{{ bank.mobile }}</td>
-                    <td>{{ bank.helpline }}</td>
-                    <td>
-                        {% if bank.email %}
-                        <a href="mailto:{{ bank.email }}">{{ bank.email }}</a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if bank.website %}
-                        <a href="{{ bank.website }}" target="_blank">Website</a>
-                        {% endif %}
-                    </td>
-                    <td>{{ bank.license_number }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="12" class="text-center">No blood banks found</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- Distance Filter Indicator -->
+    <div id="distanceFilterStatus" class="alert alert-info mb-3 d-none">
+        Showing blood banks sorted by distance from your current location.
+        <button id="clearSort" class="btn btn-sm btn-outline-info ml-2">Clear Sort</button>
+    </div>
+
+    <!-- Blood Banks Cards -->
+    <div class="row" id="bloodBankContainer">
+        {% for bank in bloodbanks %}
+        <div class="col-lg-6 col-xl-4 mb-4" data-lat="{{ bank.latitude }}" data-lng="{{ bank.longitude }}">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white position-relative">
+                    <h5 class="mb-0">{{ bank.name }}</h5>
+                    <small class="d-block">{{ bank.category }}</small>
+                    <div class="distance-badge d-none">
+                        <span class="badge bg-light text-dark"><i class="fas fa-map-marker-alt"></i> <span class="distance-value">0</span> km</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Address:</strong> {{ bank.address|linebreaksbr }}</p>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <p class="mb-1"><strong>District:</strong> {{ bank.district }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="mb-1"><strong>State:</strong> {{ bank.state }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="mb-1"><strong>Pincode:</strong> {{ bank.pincode }}</p>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <p class="mb-1"><strong>Mobile:</strong> {{ bank.mobile }}</p>
+                        </div>
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Email:</strong>
+                                {% if bank.email %}
+                                <a href="mailto:{{ bank.email }}">{{ bank.email }}</a>
+                                {% else %}N/A{% endif %}
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Website:</strong>
+                                {% if bank.website %}
+                                <a href="{{ bank.website }}" target="_blank" rel="noopener noreferrer">Visit</a>
+                                {% else %}N/A{% endif %}
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="mb-1"><strong>Components:</strong>
+                                <span class="{% if bank.blood_component_available %}text-success{% else %}text-danger{% endif %} font-weight-bold">
+                                    {% if bank.blood_component_available %}YES{% else %}NO{% endif %}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Single Card Footer -->
+                <div class="card-footer bg-transparent d-flex justify-content-between">
+                    {% if bank.latitude and bank.longitude %}
+                    <a href="https://maps.google.com/?q={{ bank.latitude }},{{ bank.longitude }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-map-marker-alt"></i> View Map
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'request_blood' bank.id %}"
+                       target="_blank"
+                       class="btn btn-sm btn-danger">
+                        <i class="fas fa-tint"></i> Request Blood
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No blood banks found</div>
+        </div>
+        {% endfor %}
     </div>
 
     <!-- Pagination -->
@@ -82,10 +127,10 @@
         <ul class="pagination justify-content-center">
             {% if bloodbanks.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page=1&search={{ search_term }}&city={{ city }}">First</a>
+                <a class="page-link" href="?page=1&search={{ search_term }}&state={{ request.GET.state }}">First</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.previous_page_number }}&search={{ search_term }}&city={{ city }}">Previous</a>
+                <a class="page-link" href="?page={{ bloodbanks.previous_page_number }}&search={{ search_term }}&state={{ request.GET.state }}">Previous</a>
             </li>
             {% endif %}
 
@@ -97,14 +142,120 @@
 
             {% if bloodbanks.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.next_page_number }}&search={{ search_term }}&city={{ city }}">Next</a>
+                <a class="page-link" href="?page={{ bloodbanks.next_page_number }}&search={{ search_term }}&state={{ request.GET.state }}">Next</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.paginator.num_pages }}&search={{ search_term }}&city={{ city }}">Last</a>
+                <a class="page-link" href="?page={{ bloodbanks.paginator.num_pages }}&search={{ search_term }}&state={{ request.GET.state }}">Last</a>
             </li>
             {% endif %}
         </ul>
     </nav>
     {% endif %}
 </div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .card {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.1);
+    }
+    .card-header {
+        padding: 0.75rem 1.25rem;
+    }
+    .card-body {
+        padding: 1rem;
+    }
+    .card-body p {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    .distance-badge {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+    #sortByDistance .fa-location-arrow {
+        margin-right: 5px;
+    }
+    .card-footer {
+        padding: 0.75rem 1.25rem;
+        border-top: 1px solid rgba(0,0,0,.125);
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Geolocation functionality
+    const sortButton = document.getElementById('sortByDistance');
+    const clearButton = document.getElementById('clearSort');
+    const statusAlert = document.getElementById('distanceFilterStatus');
+
+    if (!navigator.geolocation) {
+        sortButton.disabled = true;
+        sortButton.title = "Geolocation not supported";
+    } else {
+        sortButton.addEventListener('click', function() {
+            sortButton.disabled = true;
+            sortButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    statusAlert.classList.remove('d-none');
+                    sortButton.innerHTML = '<i class="fas fa-check-circle"></i> Sorted';
+
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    const banks = Array.from(document.querySelectorAll('#bloodBankContainer > [data-lat]'));
+
+                    banks.forEach(bank => {
+                        const bankLat = parseFloat(bank.dataset.lat);
+                        const bankLng = parseFloat(bank.dataset.lng);
+
+                        if (!isNaN(bankLat)) {
+                            const distance = calculateDistance(userLat, userLng, bankLat, bankLng);
+                            bank.dataset.distance = distance;
+                            bank.querySelector('.distance-value').textContent = distance.toFixed(1);
+                            bank.querySelector('.distance-badge').classList.remove('d-none');
+                        }
+                    });
+
+                    banks.sort((a, b) => parseFloat(a.dataset.distance) - parseFloat(b.dataset.distance));
+                    banks.forEach(bank => document.getElementById('bloodBankContainer').appendChild(bank));
+                },
+                function(error) {
+                    let message = "Error getting location";
+                    if (error.code === error.PERMISSION_DENIED) message = "Location access denied";
+                    else if (error.code === error.TIMEOUT) message = "Request timed out";
+
+                    alert(message);
+                    sortButton.disabled = false;
+                    sortButton.innerHTML = '<i class="fas fa-location-arrow"></i> Try Again';
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        });
+    }
+
+    clearButton.addEventListener('click', function() {
+        window.location.reload();
+    });
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+});
+</script>
 {% endblock %}

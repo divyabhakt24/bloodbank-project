@@ -209,8 +209,16 @@
         font-size: 0.9rem;
     }
 }
-  /*sam design*/
-/* General Styling */
+.navbar .btn-light.text-danger {
+    background-color: #fff !important;
+    border-color: #fff !important;
+    color: #dc3545 !important;
+}
+
+.navbar .btn-light.text-danger:hover {
+    background-color: #f8f9fa !important;
+    color: #c82333 !important;
+}
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
@@ -365,4 +373,62 @@ th {
 }
 body {
   background-color: yellow !important;
+}
+/* Blood Type Compatibility Styles */
+.blood-type-btn {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #dc3545;
+    background-color: white;
+    color: #dc3545;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.blood-type-btn:hover, .blood-type-btn.active {
+    background-color: #dc3545;
+    color: white;
+}
+
+.blood-types-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    min-height: 100px;
+    align-items: center;
+}
+
+.blood-type-badge {
+    padding: 0.5rem 1rem;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.blood-type-placeholder {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.compatibility-visualization {
+    margin-bottom: 3rem;
+}
+
+/* General Improvements */
+.hero-section {
+    background: linear-gradient(rgba(220, 53, 69, 0.9), rgba(220, 53, 69, 0.9));
+    background-size: cover;
+    background-position: center;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
 }

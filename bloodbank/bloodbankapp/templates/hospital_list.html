@@ -4,68 +4,99 @@
 {% block title %}Hospital Directory | Blood Bank{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Hospital Directory</h1>
-        <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#filterModal">
-            <i class="fas fa-filter"></i> Filter
-        </a>
-    </div>
+<div class="container-fluid">
+    <h1 class="my-4">Hospital Directory</h1>
 
-    <!-- Search Bar -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <form method="GET" action="{% url 'hospital_list' %}">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="search" 
-                           placeholder="Search by hospital name or location..." 
-                           value="{{ request.GET.search }}">
-                    <button class="btn btn-outline-danger" type="submit">
-                        <i class="fas fa-search"></i>
+    <!-- Search and Location Controls -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="button" id="sortByDistance" class="btn btn-outline-danger w-100">
+                        <i class="fas fa-location-arrow"></i> Sort by Distance
                     </button>
+                </div>
+                <div class="col-md-3">
+                    <a href="#" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#filterModal">
+                        <i class="fas fa-filter"></i> Filters
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Distance Filter Indicator -->
+    <div id="distanceFilterStatus" class="alert alert-info mb-3 d-none">
+        Showing hospitals sorted by distance from your current location.
+        <button id="clearSort" class="btn btn-sm btn-outline-info ml-2">Clear Sort</button>
+    </div>
+
     <!-- Hospital Cards -->
-    <div class="row">
+    <div class="row" id="hospitalContainer">
         {% for hospital in hospitals %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0 me-3">
-                            <div class="icon-circle bg-danger">
-                                <i class="fas fa-hospital text-white"></i>
-                            </div>
-                        </div>
-                        <div>
-                            <h5 class="card-title">{{ hospital.name }}</h5>
-                            <p class="card-text text-muted mb-1">
-                                <i class="fas fa-map-marker-alt"></i> {{ hospital.address }}
-                            </p>
-                            <p class="card-text text-muted mb-1">
-                                <i class="fas fa-phone"></i> {{ hospital.phone }}
-                            </p>
-                        </div>
+        <div class="col-lg-6 col-xl-4 mb-4" data-lat="{{ hospital.latitude }}" data-lng="{{ hospital.longitude }}">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white position-relative">
+                    <h5 class="mb-0">{{ hospital.name }}</h5>
+                    <div class="distance-badge d-none">
+                        <span class="badge bg-light text-dark"><i class="fas fa-map-marker-alt"></i> <span class="distance-value">0</span> km</span>
                     </div>
                 </div>
-               <div class="card-footer bg-transparent border-0">
-                <a href="{% url 'hospital_detail' hospital.id %}" class="btn btn-sm btn-outline-danger">
-                    View Details
-                </a>
-                <a href="{% url 'request_blood' hospital.id %}" class="btn btn-sm btn-danger ms-2">
-                    Request Blood
-                </a>
-            </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Address:</strong> {{ hospital.address|linebreaksbr }}</p>
+                        </div>
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Phone:</strong> {{ hospital.phone }}</p>
+                        </div>
+                        {% if hospital.email %}
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Email:</strong>
+                                <a href="mailto:{{ hospital.email }}">{{ hospital.email }}</a>
+                            </p>
+                        </div>
+                        {% endif %}
+                        {% if hospital.website %}
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Website:</strong>
+                                <a href="{{ hospital.website }}" target="_blank" rel="noopener noreferrer">Visit</a>
+                            </p>
+                        </div>
+                        {% endif %}
+                        {% if hospital.latitude and hospital.longitude %}
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Location:</strong>
+                                <a href="https://maps.google.com/?q={{ hospital.latitude }},{{ hospital.longitude }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-map-marked-alt"></i> View Map
+                                </a>
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'hospital_detail' hospital.id %}" class="btn btn-sm btn-outline-danger">
+                        View Details
+                    </a>
+                    <a href="{% url 'request_blood' hospital.id %}" class="btn btn-sm btn-danger ms-2">
+                        Request Blood
+                    </a>
+                </div>
             </div>
         </div>
         {% empty %}
-        <div class="col-12 text-center py-5">
-            <div class="alert alert-info">
-                No hospitals found. {% if request.GET.search %}Try a different search term.{% endif %}
-            </div>
+        <div class="col-12">
+            <div class="alert alert-info">No hospitals found</div>
         </div>
         {% endfor %}
     </div>
@@ -128,12 +159,24 @@
                             <option value="">All Blood Types</option>
                             <option value="A+">A+</option>
                             <option value="A-">A-</option>
-                            <!-- Add other blood types -->
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Distance</label>
-                        <input type="range" class="form-range" min="1" max="100" name="distance">
+                        <label class="form-label">Services</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="emergency" id="emergencyCheck">
+                            <label class="form-check-label" for="emergencyCheck">24/7 Emergency</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="blood_bank" id="bloodBankCheck">
+                            <label class="form-check-label" for="bloodBankCheck">Blood Bank</label>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -142,16 +185,135 @@
                 <button type="submit" form="filterForm" class="btn btn-danger">Apply Filters</button>
             </div>
         </div>
-
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .card {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+    }
+    .card-header {
+        padding: 0.75rem 1.25rem;
+    }
+    .card-body {
+        padding: 1rem;
+    }
+    .card-body p {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    .distance-badge {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+    #sortByDistance .fa-location-arrow {
+        margin-right: 5px;
+    }
+</style>
+
 <script>
-// Additional functionality can be added here
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize any hospital list specific JS
+    const sortButton = document.getElementById('sortByDistance');
+    const clearButton = document.getElementById('clearSort');
+    const statusAlert = document.getElementById('distanceFilterStatus');
+    const hospitalContainer = document.getElementById('hospitalContainer');
+
+    // Check if Geolocation is supported
+    if (!navigator.geolocation) {
+        sortButton.disabled = true;
+        sortButton.title = "Geolocation is not supported by your browser";
+        return;
+    }
+
+    sortButton.addEventListener('click', function() {
+        sortButton.disabled = true;
+        sortButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                statusAlert.classList.remove('d-none');
+                sortButton.innerHTML = '<i class="fas fa-check-circle"></i> Sorted';
+
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+
+                // Calculate distances and sort
+                const hospitals = Array.from(document.querySelectorAll('#hospitalContainer > [data-lat]'));
+
+                hospitals.forEach(hospital => {
+                    const hospitalLat = parseFloat(hospital.dataset.lat);
+                    const hospitalLng = parseFloat(hospital.dataset.lng);
+
+                    if (isNaN(hospitalLat)) {
+                        hospital.dataset.distance = Infinity; // Put hospitals without coords at the end
+                    } else {
+                        const distance = calculateDistance(userLat, userLng, hospitalLat, hospitalLng);
+                        hospital.dataset.distance = distance;
+                        hospital.querySelector('.distance-value').textContent = distance.toFixed(1);
+                        hospital.querySelector('.distance-badge').classList.remove('d-none');
+                    }
+                });
+
+                // Sort by distance
+                hospitals.sort((a, b) => parseFloat(a.dataset.distance) - parseFloat(b.dataset.distance));
+
+                // Re-append in sorted order
+                hospitals.forEach(hospital => hospitalContainer.appendChild(hospital));
+            },
+            function(error) {
+                let errorMessage = "Could not get your location";
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = "Location access was denied";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = "Location information is unavailable";
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = "The request to get location timed out";
+                        break;
+                }
+
+                alert(errorMessage + ". Please enable location services to sort by distance.");
+                console.error("Geolocation error:", error);
+                statusAlert.classList.add('d-none');
+                sortButton.disabled = false;
+                sortButton.innerHTML = '<i class="fas fa-location-arrow"></i> Sort by Distance';
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    });
+
+    clearButton.addEventListener('click', function() {
+        window.location.reload();
+    });
+
+    // Haversine formula to calculate distance between two coordinates in km
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
 });
 </script>
 {% endblock %}
