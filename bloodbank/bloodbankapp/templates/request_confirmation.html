@@ -1,14 +1,13 @@
-<!-- bloodbankapp/templates/request_confirmation.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container my-5">
+<div class="container">
+    <h2>Request Confirmation</h2>
     <div class="alert alert-success">
-        <h2>Blood Request Submitted Successfully!</h2>
-        <p>Your blood request has been received. The hospital will contact you shortly.</p>
-        <a href="{% url 'hospital_list' %}" class="btn btn-primary">
-            Back to Hospital List
-        </a>
+        Your request for <strong>{{ blood_request.units }} units</strong> of
+        <strong>{{ blood_request.blood_type }}</strong> has been submitted.
     </div>
+    <p>Status: {{ blood_request.status }}</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">Return Home</a>
 </div>
 {% endblock %}

@@ -38,11 +38,11 @@ INSTALLED_APPS = (
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "bloodbankapp",
     'django_extensions',
     'crispy_forms',
     'crispy_bootstrap5',
     'rest_framework',
+    'bloodbankapp.apps.BloodbankappConfig',
 
 )
 
@@ -139,3 +139,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 OSM_USER_AGENT = "bloodbank_app_v1" # Unique identifier for your app
+
+LOGIN_URL = 'login'  # Points to your login URL name
+LOGIN_REDIRECT_URL = 'home'  # After successful login
+LOGOUT_REDIRECT_URL = 'home'  # After logout
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yourprovider.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your@email.com'
+EMAIL_HOST_PASSWORD = 'yourpassword'
+DEFAULT_FROM_EMAIL = 'noreply@yourbloodbank.com'

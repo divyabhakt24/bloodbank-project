@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db.models import Q, Sum
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .models import BloodDonor, BloodCamp, BloodBank, Hospital
+from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile
 from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm
 from datetime import date
 from bloodbank.utils.geocoding import get_coordinates
@@ -12,7 +12,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from bloodbank.utils.osm_utils import fetch_osm_hospitals
 from django.core.cache import cache
-
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
 
 def home(request):
     return render(request, 'home.html')
@@ -156,23 +159,59 @@ def hospital_detail(request, pk):
     return render(request, 'hospital_detail.html', {'hospital': hospital})
 
 
-def request_blood(request, hospital_id):
-    hospital = get_object_or_404(Hospital, id=hospital_id)
+@login_required
+def request_blood(request, bank_id):
+    bloodbank = get_object_or_404(BloodBank, id=bank_id)
 
     if request.method == 'POST':
         form = BloodRequestForm(request.POST)
         if form.is_valid():
             blood_request = form.save(commit=False)
-            blood_request.hospital = hospital
+            blood_request.requester = request.user
+            blood_request.bloodbank = bloodbank
+            blood_request.status = 'pending'
             blood_request.save()
-            return redirect('request_confirmation')
+            messages.success(request, 'Your blood request has been submitted successfully!')
+            return redirect('request_confirmation', request_id=blood_request.id)
     else:
-        form = BloodRequestForm()
+        initial_data = {}
+        if hasattr(request.user, 'profile'):
+            initial_data = {
+                'contact_number': request.user.profile.phone_number,
+                'email': request.user.email,
+            }
+        else:
+            initial_data = {
+                'email': request.user.email,
+            }
+        form = BloodRequestForm(initial=initial_data)
 
-    return render(request, 'request_blood.html', {
-        'hospital': hospital,
-        'form': form
+    context = {
+        'bloodbank': bloodbank,
+        'form': form,
+        'title': f'Blood Request - {bloodbank.name}'
+    }
+    return render(request, 'blood_request_form.html', context)
+
+
+def request_confirmation(request, request_id):
+    """
+    Shows confirmation page after successful submission
+    """
+    blood_request = get_object_or_404(BloodRequest, id=request_id, requester=request.user)
+    return render(request, '/request_confirmation.html', {
+        'request': blood_request
     })
+
+
+# Helper function for sending notifications
+def send_blood_request_notification(blood_request):
+    """
+    Sends email/other notifications about the blood request
+    """
+    # Implementation depends on your email setup
+    pass
+
 
 def request_confirmation(request):
     return render(request, 'request_confirmation.html')
@@ -298,3 +337,44 @@ def hospital_map(request):
         'hospitals': page_obj,
         'page_obj': page_obj  # For pagination controls
     })
+
+def request_confirmation(request, request_id):
+    blood_request = get_object_or_404(BloodRequest, id=request_id)
+    context = {
+        'blood_request': blood_request,
+        'title': 'Request Confirmation'
+    }
+    return render(request, 'request_confirmation.html', context)
+
+@login_required
+# views.py (optional filtering)
+def my_blood_requests(request):
+    bank_id = None
+    if hasattr(request.user, 'userprofile') and request.user.userprofile.bank:
+        bank_id = request.user.userprofile.bank.id
+
+    context = {
+        'blood_requests': BloodRequest.objects.filter(requester=request.user),
+        'bank_id': bank_id,
+    }
+    return render(request, 'my_blood_requests.html', context)
+
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
+from .forms import CustomUserCreationForm
+
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+    redirect_authenticated_user = True
+    success_url = reverse_lazy('home')

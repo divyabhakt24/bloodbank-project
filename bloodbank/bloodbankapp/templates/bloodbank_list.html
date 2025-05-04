@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blood Bank Directory{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -90,19 +93,24 @@
                                 </span>
                             </p>
                         </div>
-                        <div class="col-sm-6">
-                            <p class="mb-1">
-                                {% if bank.latitude and bank.longitude %}
-                                <a href="https://maps.google.com/?q={{ bank.latitude }},{{ bank.longitude }}"
-                                   target="_blank"
-                                   rel="noopener noreferrer"
-                                   class="btn btn-sm btn-outline-danger">
-                                    View Map
-                                </a>
-                                {% endif %}
-                            </p>
-                        </div>
                     </div>
+                </div>
+
+                <!-- Single Card Footer -->
+                <div class="card-footer bg-transparent d-flex justify-content-between">
+                    {% if bank.latitude and bank.longitude %}
+                    <a href="https://maps.google.com/?q={{ bank.latitude }},{{ bank.longitude }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-map-marker-alt"></i> View Map
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'request_blood' bank.id %}"
+                       target="_blank"
+                       class="btn btn-sm btn-danger">
+                        <i class="fas fa-tint"></i> Request Blood
+                    </a>
                 </div>
             </div>
         </div>
@@ -119,10 +127,10 @@
         <ul class="pagination justify-content-center">
             {% if bloodbanks.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page=1&search={{ search_term }}&city={{ request.GET.city }}&state={{ request.GET.state }}">First</a>
+                <a class="page-link" href="?page=1&search={{ search_term }}&state={{ request.GET.state }}">First</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.previous_page_number }}&search={{ search_term }}&city={{ request.GET.city }}&state={{ request.GET.state }}">Previous</a>
+                <a class="page-link" href="?page={{ bloodbanks.previous_page_number }}&search={{ search_term }}&state={{ request.GET.state }}">Previous</a>
             </li>
             {% endif %}
 
@@ -134,10 +142,10 @@
 
             {% if bloodbanks.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.next_page_number }}&search={{ search_term }}&city={{ request.GET.city }}&state={{ request.GET.state }}">Next</a>
+                <a class="page-link" href="?page={{ bloodbanks.next_page_number }}&search={{ search_term }}&state={{ request.GET.state }}">Next</a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ bloodbanks.paginator.num_pages }}&search={{ search_term }}&city={{ request.GET.city }}&state={{ request.GET.state }}">Last</a>
+                <a class="page-link" href="?page={{ bloodbanks.paginator.num_pages }}&search={{ search_term }}&state={{ request.GET.state }}">Last</a>
             </li>
             {% endif %}
         </ul>
@@ -155,6 +163,7 @@
     }
     .card:hover {
         transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.1);
     }
     .card-header {
         padding: 0.75rem 1.25rem;
@@ -174,74 +183,69 @@
     #sortByDistance .fa-location-arrow {
         margin-right: 5px;
     }
+    .card-footer {
+        padding: 0.75rem 1.25rem;
+        border-top: 1px solid rgba(0,0,0,.125);
+    }
 </style>
 
 <script>
-// Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
+    // Geolocation functionality
     const sortButton = document.getElementById('sortByDistance');
+    const clearButton = document.getElementById('clearSort');
     const statusAlert = document.getElementById('distanceFilterStatus');
 
-    // Only proceed if geolocation is supported
     if (!navigator.geolocation) {
         sortButton.disabled = true;
         sortButton.title = "Geolocation not supported";
-        return;
+    } else {
+        sortButton.addEventListener('click', function() {
+            sortButton.disabled = true;
+            sortButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    statusAlert.classList.remove('d-none');
+                    sortButton.innerHTML = '<i class="fas fa-check-circle"></i> Sorted';
+
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    const banks = Array.from(document.querySelectorAll('#bloodBankContainer > [data-lat]'));
+
+                    banks.forEach(bank => {
+                        const bankLat = parseFloat(bank.dataset.lat);
+                        const bankLng = parseFloat(bank.dataset.lng);
+
+                        if (!isNaN(bankLat)) {
+                            const distance = calculateDistance(userLat, userLng, bankLat, bankLng);
+                            bank.dataset.distance = distance;
+                            bank.querySelector('.distance-value').textContent = distance.toFixed(1);
+                            bank.querySelector('.distance-badge').classList.remove('d-none');
+                        }
+                    });
+
+                    banks.sort((a, b) => parseFloat(a.dataset.distance) - parseFloat(b.dataset.distance));
+                    banks.forEach(bank => document.getElementById('bloodBankContainer').appendChild(bank));
+                },
+                function(error) {
+                    let message = "Error getting location";
+                    if (error.code === error.PERMISSION_DENIED) message = "Location access denied";
+                    else if (error.code === error.TIMEOUT) message = "Request timed out";
+
+                    alert(message);
+                    sortButton.disabled = false;
+                    sortButton.innerHTML = '<i class="fas fa-location-arrow"></i> Try Again';
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        });
     }
 
-    sortButton.addEventListener('click', function() {
-        // Visual feedback
-        sortButton.disabled = true;
-        sortButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
-
-        // GEOLOCATION REQUEST
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                // Success - show sorted status
-                statusAlert.classList.remove('d-none');
-                sortButton.innerHTML = '<i class="fas fa-check-circle"></i> Sorted';
-
-                // Get user position
-                const userLat = position.coords.latitude;
-                const userLng = position.coords.longitude;
-
-                // Process all blood bank cards
-                const banks = Array.from(document.querySelectorAll('[data-lat]'));
-
-                banks.forEach(bank => {
-                    // Calculate distance for each bank
-                    const bankLat = parseFloat(bank.dataset.lat);
-                    const bankLng = parseFloat(bank.dataset.lng);
-                    const distance = calculateDistance(userLat, userLng, bankLat, bankLng);
-
-                    // Store distance and show badge
-                    bank.dataset.distance = distance;
-                    bank.querySelector('.distance-value').textContent = distance.toFixed(1);
-                    bank.querySelector('.distance-badge').classList.remove('d-none');
-                });
-
-                // Sort by distance
-                banks.sort((a, b) => parseFloat(a.dataset.distance) - parseFloat(b.dataset.distance));
-                banks.forEach(bank => document.getElementById('bloodBankContainer').appendChild(bank));
-            },
-            function(error) {
-                // Handle errors
-                let message = "Error getting location";
-                if (error.code === error.PERMISSION_DENIED) {
-                    message = "Location access was denied";
-                } else if (error.code === error.TIMEOUT) {
-                    message = "Location request timed out";
-                }
-
-                alert(message);
-                sortButton.disabled = false;
-                sortButton.innerHTML = '<i class="fas fa-location-arrow"></i> Try Again';
-            },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
+    clearButton.addEventListener('click', function() {
+        window.location.reload();
     });
 
-    // Haversine distance formula
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;

@@ -37,21 +37,12 @@ class DonationAdmin(admin.ModelAdmin,ExportCsvMixin):
     readonly_fields = ['date']
     actions = ['export_as_csv']
 
-class BloodRequestAdmin(admin.ModelAdmin,ExportCsvMixin):
-    list_display = ['hospital', 'blood_group', 'quantity_ml', 'request_date', 'status', 'fulfilled_by']
-    list_filter = ['blood_group', 'status', 'request_date']
-    search_fields = ['hospital__name']
-    autocomplete_fields = ['hospital', 'fulfilled_by']
+@admin.register(BloodRequest)
+class BloodRequestAdmin(admin.ModelAdmin):
+    list_display = ('id', 'blood_type', 'units', 'urgency', 'requester', 'hospital', 'request_date', 'fulfilled')
+    list_filter = ('blood_type', 'urgency', 'fulfilled', 'request_date')
+    search_fields = ('hospital', 'requester__username', 'contact_number')
     date_hierarchy = 'request_date'
-    readonly_fields = ['status']
-    actions = ['export_as_csv']
-
-    def colored_status(self, obj):
-        color = 'green' if obj.status == 'Fulfilled' else 'orange'
-        return format_html(f'<b style="color:{color}">{obj.status}</b>')
-
-    colored_status.short_description = 'Status'
-    list_display = ['hospital', 'blood_group', 'quantity_ml', 'request_date', 'colored_status', 'fulfilled_by']
 
 
 class BloodBankAdmin(admin.ModelAdmin,ExportCsvMixin):
@@ -157,7 +148,5 @@ class HospitalAdmin(admin.ModelAdmin):
 admin.site.register(BloodDonor, BloodDonorAdmin)
 admin.site.register(BloodCamp, BloodCampAdmin)
 admin.site.register(BloodBank, BloodBankAdmin)
-admin.site.register(BloodRequest, BloodRequestAdmin)
 admin.site.register(Donation, DonationAdmin)
-
 

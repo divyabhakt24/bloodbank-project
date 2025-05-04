@@ -70,6 +70,18 @@
                             </p>
                         </div>
                         {% endif %}
+                        {% if hospital.latitude and hospital.longitude %}
+                        <div class="col-12">
+                            <p class="mb-1"><strong>Location:</strong>
+                                <a href="https://maps.google.com/?q={{ hospital.latitude }},{{ hospital.longitude }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-map-marked-alt"></i> View Map
+                                </a>
+                            </p>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="card-footer bg-transparent">
