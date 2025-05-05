@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import MinValueValidator, MaxValueValidator
-from .models import BloodDonor, Donation, BloodRequest
+from .models import BloodDonor, Donation, BloodRequest,DonationOffer, BloodDonationCamp
 from django.utils import timezone
 from datetime import date
 
@@ -70,23 +70,34 @@ class DonationForm(forms.ModelForm):
         return quantity
 
 
+from django import forms
+from .models import BloodRequest
+
+
 class BloodRequestForm(forms.ModelForm):
+    required_by = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=True
+    )
+
     class Meta:
         model = BloodRequest
-        fields = ['blood_type', 'units', 'urgency', 'contact_number', 'notes']  # Removed email
+        fields = [
+            'patient_name',
+            'blood_type',
+            'units_required',
+            'required_by',
+            'urgency',
+            'contact_number',
+            'email',
+            'hospital_name',
+            'city',
+            'can_accept_from_other_cities',
+            'notes'
+        ]
         widgets = {
-            'blood_type': forms.Select(attrs={'class': 'form-select'}),
-            'units': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1,
-                'max': 10
-            }),
-            'urgency': forms.Select(attrs={'class': 'form-select'}),
-            'contact_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'notes': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3
-            }),
+            'required_by': forms.DateInput(attrs={'type': 'date'}),
+            'can_accept_from_other_cities': forms.CheckboxInput(),
         }
 
 class DonorRegistrationForm(forms.ModelForm):
@@ -142,3 +153,79 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+
+
+from django import forms
+from .models import BloodRequest, DonationOffer, City
+from django.core.exceptions import ValidationError
+
+
+class BloodRequestForm(forms.ModelForm):
+    required_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = BloodRequest
+        fields = ['patient_name', 'blood_type', 'units_required',
+                  'hospital_name', 'city', 'required_date', 'contact_number',
+                  'can_accept_from_other_cities']
+        widgets = {
+            'can_accept_from_other_cities': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+class DonationOfferForm(forms.ModelForm):
+    available_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = DonationOffer
+        fields = ['blood_type', 'city', 'available_date',
+                  'contact_number', 'can_travel', 'max_travel_distance']
+        widgets = {
+            'can_travel': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        can_travel = cleaned_data.get('can_travel')
+        max_travel_distance = cleaned_data.get('max_travel_distance')
+
+        if can_travel and not max_travel_distance:
+            raise ValidationError("Please specify how far you can travel")
+        return cleaned_data
+
+
+class DonationOfferForm(forms.ModelForm):
+    class Meta:
+        model = DonationOffer
+        fields = ['blood_type', 'city', 'available_date', 'contact_number', 'can_travel', 'max_travel_distance']
+
+        widgets = {
+            'available_date': forms.DateInput(attrs={'type': 'date'}),
+            'max_travel_distance': forms.NumberInput(attrs={'min': 0}),
+        }
+
+
+class BloodDonationCampForm(forms.ModelForm):
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        validators=[MinValueValidator(date.today())]
+    )
+    start_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+    end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+
+    class Meta:
+        model = BloodDonationCamp
+        fields = [
+            'name', 'organizer', 'location', 'date',
+            'start_time', 'end_time', 'expected_donors',
+            'contact_email', 'contact_phone', 'additional_notes'
+        ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+
+        if start_time and end_time and start_time >= end_time:
+            raise forms.ValidationError("End time must be later than start time.")
+        return cleaned_data

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-4 text-center mb-4">About Our Blood Bank</h1>
+            <p class="lead text-center text-muted">
+                Saving Lives, One Donation at a Time.
+            </p>
+            <hr class="my-4">
+
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Our Mission</h3>
+                    <p class="card-text">
+                        We are committed to providing a safe, reliable, and efficient blood donation system to ensure that patients in need receive timely access to life-saving blood products.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Why Donate Blood?</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">One donation can save up to <strong>three lives</strong>.</li>
+                        <li class="list-group-item">Blood is needed every day for surgeries, accidents, and chronic illnesses.</li>
+                        <li class="list-group-item">Regular donations help maintain a stable blood supply.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">How It Works</h3>
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <i class="fas fa-user-plus fa-3x mb-3 text-danger"></i>
+                                <h5>Register</h5>
+                                <p>Sign up as a donor or request blood.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+
+                                <i class="fas fa-tint fa-3x mb-3 text-danger"></i>
+                               <h5><a href="{% url 'donate' %}" class="nav-link">Donate</a></h5>
+                                <p>Visit a blood bank and donate safely.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <i class="fas fa-heartbeat fa-3x mb-3 text-danger"></i>
+                                <h5>Save Lives</h5>
+                                <p>Your donation helps those in critical need.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'home' %}" class="btn btn-danger btn-lg">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

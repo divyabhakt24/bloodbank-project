@@ -1,9 +1,17 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
-
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 
+class City(models.Model):
+    name = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name}, {self.state}"
 
 class BloodDonor(models.Model):
     BLOOD_GROUPS = [
@@ -38,21 +46,33 @@ class BloodDonor(models.Model):
         return f"{self.name} ({self.blood_group})"
 
 class BloodCamp(models.Model):
-    name = models.CharField(max_length=150)
-    slug = models.SlugField(unique=True, blank=True)  # For URLs
-    location = models.CharField(max_length=255)
-    date = models.DateField()
-    time = models.TimeField()
-    organizer = models.CharField(max_length=150)
-    contact_number = models.CharField(
-        max_length=15,
-        validators=[RegexValidator(r'^\+?\d{10,15}$', 'Enter a valid phone number')]
-    )
-    description = models.TextField(blank=True, null=True)
-    donors = models.ManyToManyField(BloodDonor, related_name='camps_attended', blank=True)  # Track donors
+    """Unified blood camp model (includes donation camps and other events)"""
+    CAMP_TYPES = [
+        ('donation', 'Blood Donation Camp'),
+        ('awareness', 'Awareness Program'),
+        ('mixed', 'Mixed Event'),
+    ]
+
+    name = models.CharField(max_length=255,null=True)
+    camp_type = models.CharField(max_length=20, choices=CAMP_TYPES, default='donation',null=True)
+    organizer = models.CharField(max_length=255,null=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    address = models.TextField(null=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
+    start_time = models.TimeField(null=True)
+    end_time = models.TimeField(null=True)
+    contact_number = models.CharField(max_length=15,null=True)
+    email = models.EmailField(blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    donors = models.ManyToManyField(BloodDonor, blank=True, null=True)
+
 
     def __str__(self):
-        return f"{self.name} - {self.date}"
+        return f"{self.name} ({self.start_date} to {self.end_date})"
+
 
 
 from django.core.validators import URLValidator, EmailValidator
@@ -191,7 +211,15 @@ class BloodRequest(models.Model):
     hospital = models.CharField(max_length=100, null=True)
     fulfilled = models.BooleanField(default=False, null=True)
     notes = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=20, default='pending')  # Add status field
+    status = models.CharField(max_length=20, default='pending')
+    hospital_name = models.CharField(max_length=100, null=True, blank=True)
+    patient_name = models.CharField(max_length=100, null=True, blank=True)
+    units_required = models.PositiveIntegerField(null=True, blank=True)
+    can_accept_from_other_cities = models.BooleanField(default=False)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
+    required_by = models.DateField(null=True, blank=True)
+
+    # Add status field
 
     def __str__(self):
         return f"{self.blood_type} request ({self.units} units)"
@@ -211,3 +239,74 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class CampRegistration(models.Model):
+    """Tracks donor registrations for camps"""
+    donor = models.ForeignKey(BloodDonor, on_delete=models.CASCADE)
+    camp = models.ForeignKey(BloodCamp, on_delete=models.CASCADE)
+    registration_date = models.DateTimeField(auto_now_add=True)
+    attended = models.BooleanField(default=False)
+    donation_made = models.BooleanField(default=False)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        unique_together = ('donor', 'camp')
+
+    def __str__(self):
+        return f"{self.donor} at {self.camp}"
+
+
+
+
+
+class DonationOffer(models.Model):
+    STATUS_CHOICES = [
+        ('available', 'Available'),
+        ('matched', 'Matched'),
+        ('donated', 'Donated'),
+    ]
+
+    donor = models.ForeignKey(User, on_delete=models.CASCADE)
+    blood_type = models.CharField(max_length=3)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    available_date = models.DateField()
+    contact_number = models.CharField(max_length=15)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='available')
+    can_travel = models.BooleanField(default=False)
+    max_travel_distance = models.PositiveIntegerField(default=0)  # in km
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class BloodDonationMatch(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    request = models.ForeignKey(BloodRequest, on_delete=models.CASCADE)
+    donation_offer = models.ForeignKey(DonationOffer, on_delete=models.CASCADE)
+    matched_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    matched_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    notes = models.TextField(blank=True)
+
+
+class BloodDonationCamp(models.Model):
+    name = models.CharField(max_length=200)
+    organizer = models.CharField(max_length=100)
+    location = models.CharField(max_length=200)
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    expected_donors = models.PositiveIntegerField()
+    contact_email = models.EmailField()
+    contact_phone = models.CharField(max_length=15)
+    additional_notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    is_approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.name} on {self.date}"
+

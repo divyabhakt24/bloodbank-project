@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">Find Donors for Blood Request</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Request Details:</h5>
+            <p><strong>Patient:</strong> {{ blood_request.patient_name }}</p>
+            <p><strong>Blood Type:</strong> {{ blood_request.blood_type }}</p>
+            <p><strong>Location:</strong> {{ blood_request.city }}</p>
+            <p><strong>Required by:</strong> {{ blood_request.required_date }}</p>
+            <p><strong>Status:</strong>
+                <span class="badge bg-{% if blood_request.status == 'pending' %}warning{% elif blood_request.status == 'matched' %}primary{% else %}success{% endif %}">
+                    {{ blood_request.get_status_display }}
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <h4>Available Donors</h4>
+
+    {% if donors %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Donor</th>
+                    <th>Blood Type</th>
+                    <th>Location</th>
+                    <th>Available Date</th>
+                    {% if blood_request.can_accept_from_other_cities %}
+                    <th>Distance (km)</th>
+                    {% endif %}
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for donor in donors %}
+                <tr>
+                    <td>{{ donor.donor.get_full_name }}</td>
+                    <td>{{ donor.blood_type }}</td>
+                    <td>{{ donor.city }}</td>
+                    <td>{{ donor.available_date }}</td>
+                    {% if blood_request.can_accept_from_other_cities %}
+                    <td>
+                        {% if donor.can_travel %}
+                        {{ donor.distance|floatformat:1 }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="donor_id" value="{{ donor.id }}">
+                            <button type="submit" class="btn btn-sm btn-success">Select</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">No matching donors found at this time.</div>
+    {% endif %}
+</div>
+{% endblock %}

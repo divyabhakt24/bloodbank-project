@@ -26,14 +26,18 @@ urlpatterns = [
     path('nearby-camps/', views.nearby_camps_view, name='nearby_camps'),
     path('hospitals/map/', views.hospital_map, name='hospital-map'),
     path('request/confirmation/<int:request_id>/', views.request_confirmation, name='request_confirmation'),
-    path('request/confirmation/<int:request_id>/', views.request_confirmation, name='request_confirmation'),
     path('my-requests/', my_blood_requests, name='my_blood_requests'),
     path('register/', register, name='register'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('request-blood/hospital/<int:hospital_id>/', request_blood, name='request_blood_hospital'),
     path('request-blood/bank/<int:bank_id>/', views.request_blood, name='request_blood_bank'),
-    path('request-blood/', views.request_blood, name='request_blood_general'),
+    path('request-blood/', views.request_blood, name='request_blood'),
+    path('offer-donation/', views.create_donation_offer, name='create_offer'),
+    path('main/request/<int:request_id>/find-donors/', views.find_donors, name='find_donors'),
+    path('request-blood/<int:bank_id>/', views.request_blood, name='request_blood_with_bank'),
+    # For general blood requests (without specific bank)
+    path('request-blood/', views.request_blood, name='request_blood'),
 
     # Password reset URLs
     path('password-reset/',
@@ -58,6 +62,15 @@ urlpatterns = [
              template_name='registration/password_reset_complete.html'
          ),
          name='password_reset_complete'),
+    path('request-blood/', views.create_blood_request, name='create_request'),
+    path('request/<int:request_id>/find-donors/', views.find_donors, name='find_donors'),
+    path('offer-donation/', views.create_donation_offer, name='create_offer'),
+    path('match/<int:match_id>/confirm/', views.confirm_match, name='confirm_match'),
+    path('match/<int:match_id>/complete/', views.complete_match, name='complete_match'),
+    path('my-matches/', views.my_matches, name='my_matches'),
+    path('about/', views.about, name='about'),
+    path('organize-camp/', views.organize_camp, name='organize_camp'),
+    path('camp-confirmation/', views.camp_confirmation, name='camp_confirmation'),
 
     # <-- create this view if not done
 ]
