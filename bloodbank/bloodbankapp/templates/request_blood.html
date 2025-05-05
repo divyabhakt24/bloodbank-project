@@ -1,61 +1,130 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Request Blood{% endblock %}
+{% block title %}Blood Request Form | BloodBank{% endblock %}
 
 {% block content %}
-<div class="container my-4">
-    <h2 class="mb-4">Request Blood</h2>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0 text-center"><i class="fas fa-tint"></i> Blood Request Form</h2>
+                </div>
 
-    <form method="post" class="needs-validation" novalidate>
-        {% csrf_token %}
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
 
-        <div class="row g-3">
-            <!-- Hospital Field -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.hospital.id_for_label }}" class="form-label">Hospital*</label>
-                    {{ form.hospital }}
+                        <div class="row g-3 mb-4">
+                            <!-- Blood Bank Selection -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="blood_bank" name="blood_bank" required>
+                                        <option value="" selected disabled>Select Blood Bank</option>
+                                        {% for bank in blood_banks %}
+                                        <option value="{{ bank.id }}">{{ bank.name }} - {{ bank.city }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="blood_bank">Blood Bank*</label>
+                                </div>
+                            </div>
+
+                            <!-- Blood Group -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="blood_group" name="blood_group" required>
+                                        <option value="" selected disabled>Select Blood Type</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                    <label for="blood_group">Blood Group*</label>
+                                </div>
+                            </div>
+
+                            <!-- Quantity -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" id="quantity_ml" name="quantity_ml"
+                                           min="1" required placeholder="Enter quantity">
+                                    <label for="quantity_ml">Quantity (ml)*</label>
+                                </div>
+                            </div>
+
+                            <!-- Required By -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" id="required_by" name="required_by" required>
+                                    <label for="required_by">Required By*</label>
+                                </div>
+                            </div>
+
+                            <!-- Additional Information -->
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="additional_info" name="additional_info"
+                                              style="height: 100px" placeholder="Additional details"></textarea>
+                                    <label for="additional_info">Additional Information (Optional)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-danger me-md-2">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Request
+                            </button>
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <!-- Blood Group Field -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.blood_group.id_for_label }}" class="form-label">Blood Group*</label>
-                    {{ form.blood_group }}
+            <!-- Quick Action Cards -->
+            <div class="row mt-4">
+                <!-- Blood Banks Card -->
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-hospital text-danger mb-3" style="font-size: 2rem;"></i>
+                            <h5 class="card-title">Blood Banks</h5>
+                            <p class="card-text">Find nearby blood banks and check availability</p>
+                            <a href="/main/bloodbanks" class="btn btn-outline-danger">Explore</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Quantity Field -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.quantity_ml.id_for_label }}" class="form-label">Quantity (ml)*</label>
-                    {{ form.quantity_ml }}
+                 <!-- Hospitals Card -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clinic-medical text-danger mb-3" style="font-size: 2rem;"></i>
+                            <h5 class="card-title">Hospitals</h5>
+                            <p class="card-text">View our partner hospitals and their services</p>
+                            <a href="/main/hospitals" class="btn btn-outline-danger">View Hospitals</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Required By Field -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.required_by.id_for_label }}" class="form-label">Required By*</label>
-                    {{ form.required_by }}
-                </div>
-            </div>
-
-            <!-- Urgency Field -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.urgency.id_for_label }}" class="form-label">Urgency*</label>
-                    {{ form.urgency }}
+                <!-- Donate Card -->
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-hand-holding-heart text-danger mb-3" style="font-size: 2rem;"></i>
+                            <h5 class="card-title">Donate</h5>
+                            <p class="card-text">Learn how to become a blood donor</p>
+                            <a href="/main/donate" class="btn btn-outline-danger">Donate Now</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="mt-4">
-            <button type="submit" class="btn btn-danger me-2">Submit Request</button>
-            <a href="#" class="btn btn-secondary">Cancel</a>
-        </div>
-    </form>
+    </div>
 </div>
 {% endblock %}

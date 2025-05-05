@@ -3,9 +3,8 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q, Sum
 from django.views.generic import CreateView
-from django.urls import reverse_lazy
-from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile
-from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm
+from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile,BloodDonationMatch
+from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm,DonationOfferForm,DonationOffer,BloodDonationCampForm
 from datetime import date
 from bloodbank.utils.geocoding import get_coordinates
 from rest_framework.decorators import api_view
@@ -13,9 +12,11 @@ from rest_framework.response import Response
 from bloodbank.utils.osm_utils import fetch_osm_hospitals
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
+from django.contrib import messages
+from geopy.distance import geodesic
 
 def home(request):
     return render(request, 'home.html')
@@ -159,39 +160,129 @@ def hospital_detail(request, pk):
     return render(request, 'hospital_detail.html', {'hospital': hospital})
 
 
+
+
+
+
+
+def create_blood_request(request):
+    if request.method == 'POST':
+        form = BloodRequestForm(request.POST)
+        if form.is_valid():
+            blood_request = form.save(commit=False)
+            blood_request.requester = request.user
+            blood_request.save()
+            messages.success(request, 'Blood request created successfully!')
+            return redirect('find_donors', request_id=blood_request.id)
+    else:
+        form = BloodRequestForm()
+    return render(request, 'create_request.html', {'form': form})
+
+
+def find_donors(request, request_id):
+    blood_request = get_object_or_404(BloodRequest, id=request_id)
+
+    # Find compatible donors
+    compatible_donors = DonationOffer.objects.filter(
+        blood_type=blood_request.blood_type,
+        status='available',
+        available_date__lte=blood_request.required_date
+    ).exclude(donor=blood_request.requester)
+
+    # Filter by location if needed
+    if not blood_request.can_accept_from_other_cities:
+        compatible_donors = compatible_donors.filter(city=blood_request.city)
+    else:
+        # Calculate distances for donors who can travel
+        request_city_coords = (blood_request.city.latitude, blood_request.city.longitude)
+
+        for donor in compatible_donors.filter(can_travel=True):
+            donor_city_coords = (donor.city.latitude, donor.city.longitude)
+            distance = geodesic(request_city_coords, donor_city_coords).km
+            donor.distance = distance
+
+    if request.method == 'POST' and 'donor_id' in request.POST:
+        donor = get_object_or_404(DonationOffer, id=request.POST['donor_id'])
+
+        # Create a match
+        match = BloodDonationMatch.objects.create(
+            request=blood_request,
+            donation_offer=donor,
+            matched_by=request.user,
+            status='pending'
+        )
+
+        # Update statuses
+        blood_request.status = 'matched'
+        blood_request.save()
+        donor.status = 'matched'
+        donor.save()
+
+        messages.success(request, 'Donor matched successfully!')
+        return redirect('match_details', match_id=match.id)
+
+    return render(request, 'find_donors.html', {
+        'blood_request': blood_request,
+        'donors': compatible_donors,
+        'can_accept_from_other_cities': blood_request.can_accept_from_other_cities
+    })
+
+
+def confirm_match(request, match_id):
+    match = get_object_or_404(BloodDonationMatch, id=match_id)
+    if request.method == 'POST':
+        match.status = 'confirmed'
+        match.save()
+        messages.success(request, 'Match confirmed!')
+        return redirect('my_matches')
+    return render(request, 'confirm_match.html', {'match': match})
+
+
+def complete_match(request, match_id):
+    match = get_object_or_404(BloodDonationMatch, id=match_id)
+    if request.method == 'POST':
+        match.status = 'completed'
+        match.save()
+        match.request.status = 'fulfilled'
+        match.request.save()
+        match.donation_offer.status = 'donated'
+        match.donation_offer.save()
+        messages.success(request, 'Donation completed successfully!')
+        return redirect('my_matches')
+    return render(request, 'complete_match.html', {'match': match})
+
+
 @login_required
-def request_blood(request, bank_id):
-    bloodbank = get_object_or_404(BloodBank, id=bank_id)
+def request_blood(request, bank_id=None):
+    """
+    Handle blood requests with optional bank_id parameter.
+    If bank_id is provided, associate the request with that blood bank.
+    """
+    blood_bank = None
+    blood_banks = BloodBank.objects.all().order_by('name')
+    context = {
+        'blood_banks': blood_banks
+    }
+    if bank_id:
+        blood_bank = get_object_or_404(BloodBank, pk=bank_id)
 
     if request.method == 'POST':
         form = BloodRequestForm(request.POST)
         if form.is_valid():
             blood_request = form.save(commit=False)
             blood_request.requester = request.user
-            blood_request.bloodbank = bloodbank
-            blood_request.status = 'pending'
+            if blood_bank:
+                blood_request.blood_bank = blood_bank
             blood_request.save()
-            messages.success(request, 'Your blood request has been submitted successfully!')
-            return redirect('request_confirmation', request_id=blood_request.id)
+            return redirect('request_success')  # Make sure this URL exists
     else:
-        initial_data = {}
-        if hasattr(request.user, 'profile'):
-            initial_data = {
-                'contact_number': request.user.profile.phone_number,
-                'email': request.user.email,
-            }
-        else:
-            initial_data = {
-                'email': request.user.email,
-            }
-        form = BloodRequestForm(initial=initial_data)
+        form = BloodRequestForm()
 
-    context = {
-        'bloodbank': bloodbank,
+    return render(request, 'request_blood.html', {
         'form': form,
-        'title': f'Blood Request - {bloodbank.name}'
-    }
-    return render(request, 'blood_request_form.html', context)
+        'blood_bank': blood_bank
+    })
+
 
 
 def request_confirmation(request, request_id):
@@ -199,10 +290,11 @@ def request_confirmation(request, request_id):
     Shows confirmation page after successful submission
     """
     blood_request = get_object_or_404(BloodRequest, id=request_id, requester=request.user)
-    return render(request, '/request_confirmation.html', {
+    return render(request, 'request_confirmation.html', {
         'request': blood_request
     })
-
+def about(request):
+    return render(request, 'about.html')
 
 # Helper function for sending notifications
 def send_blood_request_notification(blood_request):
@@ -378,3 +470,50 @@ class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
     redirect_authenticated_user = True
     success_url = reverse_lazy('home')
+
+
+def create_donation_offer(request):
+    if request.method == 'POST':
+        form = DonationOfferForm(request.POST)
+        if form.is_valid():
+            donation_offer = form.save(commit=False)
+            donation_offer.donor = request.user
+            donation_offer.save()
+            return redirect('some_success_url')  # Replace with your success URL
+    else:
+        form = DonationOfferForm()
+
+    return render(request, 'create_donation_offer.html', {
+        'form': form
+    })
+
+
+@login_required
+def my_matches(request):
+    # Get matches where current user is either the requester or donor
+    matches = BloodDonationMatch.objects.filter(
+        models.Q(request__requester=request.user) |
+        models.Q(donation_offer__donor=request.user)
+    ).order_by('-matched_at')
+
+    return render(request, 'my_matches.html', {
+        'matches': matches
+    })
+
+
+def organize_camp(request):
+    if request.method == 'POST':
+        form = BloodDonationCampForm(request.POST)
+        if form.is_valid():
+            camp = form.save(commit=False)
+            camp.save()
+            messages.success(request, 'Your blood donation camp has been submitted for approval!')
+            return redirect('camp_confirmation')
+    else:
+        form = BloodDonationCampForm()
+
+    return render(request, 'organize_camp.html', {'form': form})
+
+
+def camp_confirmation(request):
+    return render(request, 'camp_confirmation.html')

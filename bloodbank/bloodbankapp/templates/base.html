@@ -26,11 +26,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'my_blood_requests' %}">Request Status</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'request_blood' %}">Blood Request </a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-                <li class="nav-item"><a class="nav-link btn btn-light text-danger fw-bold ms-2"
+                <li class="nav-item"><a class="nav-link btn  text-danger fw-bold ms-2"
                                        href="{% url 'donate' %}">Donate Now</a></li>
+                <li><a href="{% url 'organize_camp' %}" class="text-white-50">Register Blood Camp</a></li>
+
             </ul>
         </div>
     </div>
@@ -55,10 +57,10 @@
                 <div class="col-lg-3 col-md-6">
                     <h5 class="text-uppercase mb-4">Want to Donate</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-white-50">Blood Donation Camps</a></li>
+                        <li class="mb-2"><a class="text-white-50" href="{% url 'blood_camps' %}" >Blood Donation Camps</a></li>
                         <li class="mb-2"><a href="#" class="text-white-50">Donor Login</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50">About Blood Donation</a></li>
-                        <li><a href="#" class="text-white-50">Register VBD Camp</a></li>
+                        <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50">About Blood Donation</a></li>
+                        <li><a href="{% url 'organize_camp' %}" class="text-white-50">Register VBD Camp</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">

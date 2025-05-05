@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     BloodDonor, BloodCamp, BloodRequest, Donation,
-    Hospital,BloodBank
+    Hospital,BloodBank,BloodDonationCamp
 )
 from .admin_utis import ExportCsvMixin
 from django.utils.html import format_html
@@ -20,13 +20,21 @@ class BloodDonorAdmin(admin.ModelAdmin,ExportCsvMixin):
     exclude = ('camps_attended',)
     actions = ['export_as_csv']
 
-class BloodCampAdmin(admin.ModelAdmin,ExportCsvMixin):
-    list_display = ['name', 'location', 'date', 'organizer']
-    search_fields = ['name', 'location', 'organizer']
-    list_filter = ['date', 'location']
+class BloodCampAdmin(admin.ModelAdmin, ExportCsvMixin):
+    list_display = ['name', 'get_location', 'get_duration', 'city', 'organizer']
+    search_fields = ['name', 'organizer', 'city__name']
+    list_filter = ['start_date', 'city']
     inlines = [BloodDonorInline]
     autocomplete_fields = ['donors']
     actions = ['export_as_csv']
+
+    def get_location(self, obj):
+        return f"{obj.address}, {obj.city}"
+    get_location.short_description = 'Location'
+
+    def get_duration(self, obj):
+        return f"{obj.start_date} to {obj.end_date}"
+    get_duration.short_description = 'Duration'
 
 class DonationAdmin(admin.ModelAdmin,ExportCsvMixin):
     list_display = ['donor', 'blood_bank', 'blood_group', 'quantity_ml', 'date']
@@ -150,3 +158,8 @@ admin.site.register(BloodCamp, BloodCampAdmin)
 admin.site.register(BloodBank, BloodBankAdmin)
 admin.site.register(Donation, DonationAdmin)
 
+@admin.register(BloodDonationCamp)
+class BloodDonationCampAdmin(admin.ModelAdmin):
+    list_display = ('name', 'date', 'location', 'organizer', 'is_approved')
+    list_filter = ('is_approved', 'date')
+    search_fields = ('name', 'location', 'organizer')

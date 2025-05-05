@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Blood Donation Matches</h2>
+
+{% if matches %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Blood Type</th>
+            <th>Units</th>
+            <th>Status</th>
+            <th>Matched On</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for match in matches %}
+        <tr>
+            <td>{{ match.request.blood_type }}</td>
+            <td>{{ match.request.units }}</td>
+            <td>{{ match.get_status_display }}</td>
+            <td>{{ match.matched_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You have no matches yet.</p>
+{% endif %}
+{% endblock %}
