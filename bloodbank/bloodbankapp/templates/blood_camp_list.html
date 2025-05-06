@@ -19,13 +19,12 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-center">#</th>
+                            <th class="text-center">S.No</th>
                             <th>Camp Name</th>
                             <th>Location</th>
                             <th>Date</th>
                             <th>Time</th>
                             <th>Organizer</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,15 +34,12 @@
                             <td class="fw-bold">{{ camp.name }}</td>
                             <td>{{ camp.location }}</td>
                             <td>{{ camp.date|date:"d M Y" }}</td>
-                            <td>{{ camp.time|time:"h:i A" }}</td>
+                            <td>{{ camp.start_time|time:"h:i A" }} - {{ camp.end_time|time:"h:i A" }}</td>
                             <td>{{ camp.organizer }}</td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-outline-danger">Register</a>
-                            </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">
+                            <td colspan="6" class="text-center py-4 text-muted">
                                 No upcoming camps found. Check back later!
                             </td>
                         </tr>
@@ -52,13 +48,6 @@
                 </table>
             </div>
         </div>
-    </div>
-
-    <!-- Optional: Add a button to organize a new camp -->
-    <div class="text-center mt-4">
-        <a href="#" class="btn btn-danger btn-lg">
-            <i class="fas fa-plus-circle me-2"></i>Organize a Camp
-        </a>
     </div>
 </div>
 {% endblock %}
