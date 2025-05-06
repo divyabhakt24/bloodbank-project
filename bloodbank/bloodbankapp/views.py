@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q, Sum
 from django.views.generic import CreateView
-from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile,BloodDonationMatch
+from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile,BloodDonationMatch,BloodDonationCamp
 from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm,DonationOfferForm,DonationOffer,BloodDonationCampForm
 from datetime import date
 from bloodbank.utils.geocoding import get_coordinates
@@ -92,7 +92,7 @@ def donor_list(request):
 
 
 def blood_camp_list(request):
-    camps = BloodCamp.objects.all()
+    camps = BloodDonationCamp.objects.all()
     return render(request, 'blood_camp_list.html', {'camps': camps})
 
 
@@ -255,14 +255,11 @@ def complete_match(request, match_id):
 @login_required
 def request_blood(request, bank_id=None):
     """
-    Handle blood requests with optional bank_id parameter.
-    If bank_id is provided, associate the request with that blood bank.
+    Handle blood requests, with optional preselected blood bank.
     """
     blood_bank = None
     blood_banks = BloodBank.objects.all().order_by('name')
-    context = {
-        'blood_banks': blood_banks
-    }
+
     if bank_id:
         blood_bank = get_object_or_404(BloodBank, pk=bank_id)
 
@@ -271,17 +268,36 @@ def request_blood(request, bank_id=None):
         if form.is_valid():
             blood_request = form.save(commit=False)
             blood_request.requester = request.user
-            if blood_bank:
+
+            # Assign blood bank from form select
+            selected_bank_id = request.POST.get('blood_bank')
+            if selected_bank_id:
+                blood_request.blood_bank = get_object_or_404(BloodBank, id=selected_bank_id)
+            elif blood_bank:
                 blood_request.blood_bank = blood_bank
+            else:
+                form.add_error('blood_bank', 'Please select a valid blood bank.')
+                return render(request, 'request_blood.html', {
+                    'form': form,
+                    'blood_bank': blood_bank,
+                    'blood_banks': blood_banks
+                })
+
             blood_request.save()
-            return redirect('request_success')  # Make sure this URL exists
+            return redirect('request_confirmation', request_id=blood_request.id)
+        else:
+            print("Form errors:", form.errors)
+
     else:
         form = BloodRequestForm()
 
     return render(request, 'request_blood.html', {
         'form': form,
-        'blood_bank': blood_bank
+        'blood_bank': blood_bank,
+        'blood_banks': blood_banks
     })
+
+
 
 
 
@@ -291,7 +307,7 @@ def request_confirmation(request, request_id):
     """
     blood_request = get_object_or_404(BloodRequest, id=request_id, requester=request.user)
     return render(request, 'request_confirmation.html', {
-        'request': blood_request
+        'blood_request': blood_request  # ✅ proper key name
     })
 def about(request):
     return render(request, 'about.html')
@@ -305,8 +321,6 @@ def send_blood_request_notification(blood_request):
     pass
 
 
-def request_confirmation(request):
-    return render(request, 'request_confirmation.html')
 
 def donor_detail(request, pk):
     donor = get_object_or_404(BloodDonor, pk=pk)
@@ -430,13 +444,6 @@ def hospital_map(request):
         'page_obj': page_obj  # For pagination controls
     })
 
-def request_confirmation(request, request_id):
-    blood_request = get_object_or_404(BloodRequest, id=request_id)
-    context = {
-        'blood_request': blood_request,
-        'title': 'Request Confirmation'
-    }
-    return render(request, 'request_confirmation.html', context)
 
 @login_required
 # views.py (optional filtering)
@@ -505,14 +512,22 @@ def organize_camp(request):
     if request.method == 'POST':
         form = BloodDonationCampForm(request.POST)
         if form.is_valid():
+            # Save the camp to database
             camp = form.save(commit=False)
+            camp.created_by = request.user
             camp.save()
-            messages.success(request, 'Your blood donation camp has been submitted for approval!')
+
+            # Optional: Set additional fields before saving
+            # camp.created_by = request.user  # if using user authentication
+            # camp.save()
+
+            messages.success(request, 'Your blood donation camp has been successfully registered!')
             return redirect('camp_confirmation')
     else:
         form = BloodDonationCampForm()
 
     return render(request, 'organize_camp.html', {'form': form})
+
 
 
 def camp_confirmation(request):
