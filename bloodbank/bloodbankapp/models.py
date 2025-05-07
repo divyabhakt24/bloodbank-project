@@ -303,3 +303,17 @@ class BloodDonationCamp(models.Model):
     def __str__(self):
         return f"{self.name} on {self.date}"
 
+class BloodInventory(models.Model):
+    BLOOD_TYPES = [
+        ('A+', 'A+'), ('A-', 'A-'),
+        ('B+', 'B+'), ('B-', 'B-'),
+        ('AB+', 'AB+'), ('AB-', 'AB-'),
+        ('O+', 'O+'), ('O-', 'O-'),
+    ]
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, null=True, blank=True)
+    blood_bank = models.ForeignKey(BloodBank, on_delete=models.CASCADE, null=True, blank=True)
+    blood_type = models.CharField(max_length=3, choices=BLOOD_TYPES)
+    units_available = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = (('hospital', 'blood_type'), ('blood_bank', 'blood_type'))

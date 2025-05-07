@@ -11,8 +11,16 @@
     <div class="card mb-4">
         <div class="card-body">
             <form method="get" class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <input type="text" name="search" class="form-control" placeholder="Search by name..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="state" class="form-select">
+                        <option value="">All States</option>
+                        {% for state in states %}
+                        <option value="{{ state }}" {% if request.GET.state == state %}selected{% endif %}>{{ state }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <button type="button" id="sortByDistance" class="btn btn-outline-danger w-100">
@@ -20,11 +28,6 @@
                     </button>
                 </div>
                 <div class="col-md-3">
-                    <a href="#" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#filterModal">
-                        <i class="fas fa-filter"></i> Filters
-                    </a>
-                </div>
-                <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">Search</button>
                 </div>
             </form>
@@ -50,6 +53,9 @@
                 </div>
                 <div class="card-body">
                     <div class="row g-2">
+                        <div class="col-12">
+                            <p class="mb-1"><strong>State:</strong> {{ hospital.state }}</p>
+                        </div>
                         <div class="col-12">
                             <p class="mb-1"><strong>Address:</strong> {{ hospital.address|linebreaksbr }}</p>
                         </div>
@@ -103,89 +109,66 @@
 
     <!-- Pagination -->
     {% if hospitals.has_other_pages %}
-    <nav aria-label="Page navigation">
+    <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             {% if hospitals.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page=1&search={{ request.GET.search }}" aria-label="First">
+                <a class="page-link" href="?page=1&search={{ request.GET.search }}&state={{ request.GET.state }}" aria-label="First">
                     <span aria-hidden="true">&laquo;&laquo;</span>
+                    <span class="sr-only">First</span>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ hospitals.previous_page_number }}&search={{ request.GET.search }}" aria-label="Previous">
+                <a class="page-link" href="?page={{ hospitals.previous_page_number }}&search={{ request.GET.search }}&state={{ request.GET.state }}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
                 </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;&laquo;</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
             </li>
             {% endif %}
 
             {% for num in hospitals.paginator.page_range %}
                 {% if hospitals.number == num %}
-                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
-                {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}&search={{ request.GET.search }}">{{ num }}</a></li>
+                <li class="page-item active">
+                    <span class="page-link">{{ num }} <span class="sr-only">(current)</span></span>
+                </li>
+                {% elif num > hospitals.number|add:'-3' and num < hospitals.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}&search={{ request.GET.search }}&state={{ request.GET.state }}">{{ num }}</a>
+                </li>
                 {% endif %}
             {% endfor %}
 
             {% if hospitals.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ hospitals.next_page_number }}&search={{ request.GET.search }}" aria-label="Next">
+                <a class="page-link" href="?page={{ hospitals.next_page_number }}&search={{ request.GET.search }}&state={{ request.GET.state }}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ hospitals.paginator.num_pages }}&search={{ request.GET.search }}" aria-label="Last">
+                <a class="page-link" href="?page={{ hospitals.paginator.num_pages }}&search={{ request.GET.search }}&state={{ request.GET.state }}" aria-label="Last">
                     <span aria-hidden="true">&raquo;&raquo;</span>
+                    <span class="sr-only">Last</span>
                 </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;&raquo;</span>
             </li>
             {% endif %}
         </ul>
     </nav>
     {% endif %}
-</div>
-
-<!-- Filter Modal -->
-<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filterModalLabel">Filter Hospitals</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="GET" id="filterForm">
-                    <div class="mb-3">
-                        <label class="form-label">Blood Type Availability</label>
-                        <select class="form-select" name="blood_type">
-                            <option value="">All Blood Types</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Services</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="emergency" id="emergencyCheck">
-                            <label class="form-check-label" for="emergencyCheck">24/7 Emergency</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="blood_bank" id="bloodBankCheck">
-                            <label class="form-check-label" for="bloodBankCheck">Blood Bank</label>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="filterForm" class="btn btn-danger">Apply Filters</button>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
 
@@ -218,6 +201,35 @@
     }
     #sortByDistance .fa-location-arrow {
         margin-right: 5px;
+    }
+    /* Improved Pagination Styles */
+    .pagination {
+        margin: 20px 0;
+    }
+    .page-item {
+        margin: 0 2px;
+    }
+    .page-link {
+        color: #dc3545;
+        border: 1px solid #dee2e6;
+        padding: 0.5rem 0.75rem;
+        transition: all 0.2s;
+    }
+    .page-link:hover {
+        color: #fff;
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    .page-item.active .page-link {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #dee2e6;
     }
 </style>
 

@@ -5,12 +5,29 @@
     <h2>{{ bank.name }}</h2>
     <p>Location: {{ bank.city }}, {{ bank.state }}</p>
     <p>Contact: {{ bank.phone }}</p>
-
-    <h3>Available Blood Groups:</h3>
-    <ul>
-        {% for group in bank.available_groups.all %}
-        <li>{{ group.name }}</li>
+<div class="card-body">
+  <h5 class="card-title">Available Blood Types</h5>
+  {% if inventory %}
+    <table class="table table-bordered table-sm">
+      <thead>
+        <tr>
+          <th>Blood Type</th>
+          <th>Units Available</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in inventory %}
+          <tr>
+            <td>{{ item.blood_type }}</td>
+            <td>{{ item.units_available }}</td>
+          </tr>
         {% endfor %}
-    </ul>
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-muted">No blood type information available</p>
+  {% endif %}
+</div>
+
 </div>
 {% endblock %}
