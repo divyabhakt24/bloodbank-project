@@ -294,15 +294,19 @@ def complete_match(request, match_id):
 
 
 @login_required
-def request_blood(request, bank_id=None):
+def request_blood(request, hospital_id=None, bank_id=None):
     """
-    Handle blood requests, with optional preselected blood bank.
+    Handle blood requests, with optional preselected hospital or blood bank.
     """
     blood_bank = None
+    hospital = None
     blood_banks = BloodBank.objects.all().order_by('name')
 
     if bank_id:
         blood_bank = get_object_or_404(BloodBank, pk=bank_id)
+    elif hospital_id:
+        hospital = get_object_or_404(Hospital, pk=hospital_id)
+        # Optionally set blood_bank based on hospital if they're related
 
     if request.method == 'POST':
         form = BloodRequestForm(request.POST)
@@ -321,13 +325,12 @@ def request_blood(request, bank_id=None):
                 return render(request, 'request_blood.html', {
                     'form': form,
                     'blood_bank': blood_bank,
+                    'hospital': hospital,
                     'blood_banks': blood_banks
                 })
 
             blood_request.save()
             return redirect('request_confirmation', request_id=blood_request.id)
-        else:
-            print("Form errors:", form.errors)
 
     else:
         form = BloodRequestForm()
@@ -335,6 +338,7 @@ def request_blood(request, bank_id=None):
     return render(request, 'request_blood.html', {
         'form': form,
         'blood_bank': blood_bank,
+        'hospital': hospital,
         'blood_banks': blood_banks
     })
 

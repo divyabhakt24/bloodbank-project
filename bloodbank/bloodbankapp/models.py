@@ -317,3 +317,58 @@ class BloodInventory(models.Model):
 
     class Meta:
         unique_together = (('hospital', 'blood_type'), ('blood_bank', 'blood_type'))
+
+
+# Intercity Blood Donation
+class CrossCityDonation(models.Model):
+    STATUS_CHOICES = [
+        ('initiated', 'Initiated'),
+        ('donated', 'Donated'),
+        ('transferred', 'Transferred'),
+        ('received', 'Received'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    donor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cross_city_donations')
+    donor_city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='donor_city')
+    patient_city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='patient_city')
+    blood_type = models.CharField(max_length=3, choices=BloodDonor.BLOOD_GROUPS)
+    units = models.PositiveIntegerField()
+    donor_blood_bank = models.ForeignKey(BloodBank, on_delete=models.CASCADE, related_name='donor_blood_bank')
+    patient_blood_bank = models.ForeignKey(BloodBank, on_delete=models.CASCADE, related_name='patient_blood_bank')
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='initiated')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    donation_date = models.DateField(null=True, blank=True)
+    received_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Donation from {self.donor_city} to {self.patient_city} ({self.blood_type})"
+
+    def update_inventory(self):
+        if self.status == 'donated':
+            # Reduce inventory at donor's blood bank
+            donor_inventory, created = BloodInventory.objects.get_or_create(
+                blood_bank=self.donor_blood_bank,
+                blood_type=self.blood_type,
+                defaults={'units_available': 0}
+            )
+            donor_inventory.units_available += self.units
+            donor_inventory.save()
+
+        elif self.status == 'received':
+            # Reduce inventory at donor's blood bank and increase at patient's
+            donor_inventory = BloodInventory.objects.get(
+                blood_bank=self.donor_blood_bank,
+                blood_type=self.blood_type
+            )
+            donor_inventory.units_available -= self.units
+            donor_inventory.save()
+
+            patient_inventory, created = BloodInventory.objects.get_or_create(
+                blood_bank=self.patient_blood_bank,
+                blood_type=self.blood_type,
+                defaults={'units_available': 0}
+            )
+            patient_inventory.units_available += self.units
+            patient_inventory.save()
