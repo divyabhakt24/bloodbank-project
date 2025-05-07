@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     BloodDonor, BloodCamp, BloodRequest, Donation,
-    Hospital,BloodBank,BloodDonationCamp
+    Hospital,BloodBank,BloodDonationCamp,BloodInventory
 )
 from .admin_utis import ExportCsvMixin
 from django.utils.html import format_html
@@ -163,3 +163,9 @@ class BloodDonationCampAdmin(admin.ModelAdmin):
     list_display = ('name', 'date', 'location', 'organizer', 'is_approved')
     list_filter = ('is_approved', 'date')
     search_fields = ('name', 'location', 'organizer')
+
+@admin.register(BloodInventory)
+class BloodInventoryAdmin(admin.ModelAdmin):
+    list_display = ('blood_type', 'units_available', 'hospital', 'blood_bank')
+    list_filter = ('blood_type',)
+    search_fields = ('hospital__name', 'blood_bank__name')

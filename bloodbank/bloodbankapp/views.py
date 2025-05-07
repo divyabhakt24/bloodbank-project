@@ -3,8 +3,8 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q, Sum
 from django.views.generic import CreateView
-from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile,BloodDonationMatch,BloodDonationCamp
-from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm,DonationOfferForm,DonationOffer,BloodDonationCampForm
+from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile,BloodDonationMatch,BloodDonationCamp,BloodInventory
+from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm,DonationOfferForm,DonationOffer,BloodDonationCampForm,BloodDonorForm
 from datetime import date
 from bloodbank.utils.geocoding import get_coordinates
 from rest_framework.decorators import api_view
@@ -18,8 +18,31 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from geopy.distance import geodesic
 
+
 def home(request):
-    return render(request, 'home.html')
+    if request.method == 'POST':
+        if 'donor_submit' in request.POST:
+            donor_form = BloodDonorForm(request.POST)
+            if donor_form.is_valid():
+                donor_form.save()
+                messages.success(request, "Thank you for registering as a donor!")
+                return redirect('home')
+        elif 'request_submit' in request.POST:
+            request_form = BloodRequestForm(request.POST)
+            if request_form.is_valid():
+                request_form.save()
+                messages.success(request, "Your blood request has been submitted!")
+                return redirect('home')
+
+    donor_form = BloodDonorForm()
+    request_form = BloodRequestForm()
+    registration_form = DonorRegistrationForm()
+
+    return render(request, 'home.html', {
+        'donor_form': donor_form,
+        'request_form': request_form,
+        'DonorRegistrationForm': registration_form,
+    })
 
 
 def login(request):
@@ -113,25 +136,49 @@ def blood_bank_list(request):
 
 
 def hospital_list(request):
-    hospitals = Hospital.objects.all()
-    return render(request, 'hospital_list.html', {'hospitals': hospitals})
+    search_term = request.GET.get('search', '')
 
+    hospitals = Hospital.objects.all()
+
+    if search_term:
+        hospitals = hospitals.filter(
+            Q(name__icontains=search_term) |
+            Q(address__icontains=search_term) |
+            Q(district__icontains=search_term) |
+            Q(state__icontains=search_term)
+        )
+    states = Hospital.objects.values_list('state', flat=True).distinct().order_by('state')
+
+    # Add pagination
+    paginator = Paginator(hospitals, 10)  # Show 10 hospitals per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'hospital_list.html', {
+        'hospitals': page_obj,
+        'search_term': search_term,
+        'states': states,
+    })
 
 def bloodbank_list(request):
     bloodbanks = BloodBank.objects.all()
     search_term = request.GET.get('search', '')
     blood_group = request.GET.get('blood_group', '')
+    state_filter = request.GET.get('state', '')
 
     if search_term:
         bloodbanks = bloodbanks.filter(
             Q(name__icontains=search_term) |
-            Q(city__icontains=search_term) |
             Q(state__icontains=search_term)
         )
 
     if blood_group:
         bloodbanks = bloodbanks.filter(available_groups__name=blood_group)
 
+    if state_filter:
+        bloodbanks = bloodbanks.filter(state=state_filter)
+    # Get unique states for dropdown
+    states = BloodBank.objects.order_by('state').values_list('state', flat=True).distinct()
     # Move pagination outside the search_term condition
     paginator = Paginator(bloodbanks, 10)
     page_number = request.GET.get('page')
@@ -140,13 +187,11 @@ def bloodbank_list(request):
     return render(request, 'bloodbank_list.html', {
         'bloodbanks': page_obj,
         'search_term': search_term,
-        'blood_group': blood_group
+        'blood_group': blood_group,
+        'states': states
     })
 
 
-def bloodbank_detail(request, pk):
-    bank = get_object_or_404(BloodBank, id=pk)
-    return render(request, 'bloodbank_detail.html', {'bank': bank})
 
 
 class DonorRegisterView(CreateView):
@@ -154,10 +199,6 @@ class DonorRegisterView(CreateView):
     form_class = DonorRegistrationForm
     template_name = 'donor_register.html'
     success_url = reverse_lazy('donor_list')
-
-def hospital_detail(request, pk):
-    hospital = get_object_or_404(Hospital, id=pk)
-    return render(request, 'hospital_detail.html', {'hospital': hospital})
 
 
 
@@ -253,15 +294,19 @@ def complete_match(request, match_id):
 
 
 @login_required
-def request_blood(request, bank_id=None):
+def request_blood(request, hospital_id=None, bank_id=None):
     """
-    Handle blood requests, with optional preselected blood bank.
+    Handle blood requests, with optional preselected hospital or blood bank.
     """
     blood_bank = None
+    hospital = None
     blood_banks = BloodBank.objects.all().order_by('name')
 
     if bank_id:
         blood_bank = get_object_or_404(BloodBank, pk=bank_id)
+    elif hospital_id:
+        hospital = get_object_or_404(Hospital, pk=hospital_id)
+        # Optionally set blood_bank based on hospital if they're related
 
     if request.method == 'POST':
         form = BloodRequestForm(request.POST)
@@ -280,13 +325,12 @@ def request_blood(request, bank_id=None):
                 return render(request, 'request_blood.html', {
                     'form': form,
                     'blood_bank': blood_bank,
+                    'hospital': hospital,
                     'blood_banks': blood_banks
                 })
 
             blood_request.save()
             return redirect('request_confirmation', request_id=blood_request.id)
-        else:
-            print("Form errors:", form.errors)
 
     else:
         form = BloodRequestForm()
@@ -294,6 +338,7 @@ def request_blood(request, bank_id=None):
     return render(request, 'request_blood.html', {
         'form': form,
         'blood_bank': blood_bank,
+        'hospital': hospital,
         'blood_banks': blood_banks
     })
 
@@ -336,8 +381,6 @@ def request_donor(request, pk):
     # Add your request logic here
     return render(request, 'request_donor.html', {'donor': donor})
 
-from django.shortcuts import render
-from .models import BloodDonationCamp
 import folium
 import math
 
@@ -532,3 +575,22 @@ def organize_camp(request):
 
 def camp_confirmation(request):
     return render(request, 'camp_confirmation.html')
+
+
+
+def bloodbank_detail(request, bank_id):
+    bloodbank = get_object_or_404(BloodBank, id=pk)
+    inventory = BloodInventory.objects.filter(blood_bank=bloodbank)
+    return render(request, 'bloodbank_detail.html', {
+        'bloodbank': bloodbank,
+        'inventory': inventory,
+    })
+
+def hospital_detail(request, pk):
+    hospital = get_object_or_404(Hospital, id=pk)
+    inventory = BloodInventory.objects.filter(hospital=hospital)
+    return render(request, 'hospital_detail.html', {
+        'hospital': hospital,
+        'inventory': inventory,
+    })
+
