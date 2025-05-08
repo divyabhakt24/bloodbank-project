@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Patient Dashboard</h2>
+<div class="card">
+    <div class="card-body">
+        <h3>{{ patient.first_name }} {{ patient.last_name }}</h3>
+        <p><strong>Blood Type:</strong> {{ patient.blood_type }}</p>
+        <p><strong>Age:</strong> {{ patient.age }}</p>
+
+        <h4>Contact Information</h4>
+        <p>{{ patient.address_line1 }}<br>
+           {% if patient.address_line2 %}{{ patient.address_line2 }}<br>{% endif %}
+           {{ patient.city }}, {{ patient.state }} {{ patient.postal_code }}<br>
+           {{ patient.country }}</p>
+
+        <a href="{% url 'initiate_cross_city_donation' %}" class="btn btn-primary">
+            Request Cross-City Donation
+        </a>
+    </div>
+</div>
+{% endblock %}

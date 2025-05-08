@@ -1,7 +1,9 @@
 from django.urls import path
 from . import views
-from .views import bloodbank_list, bloodbank_detail, DonorRegisterView,donor_list,hospital_detail, request_blood, request_confirmation, my_blood_requests, CustomLoginView, register
+from .views import bloodbank_list, bloodbank_detail, DonorRegisterView,donor_list,hospital_detail, request_blood, request_confirmation, my_blood_requests, CustomLoginView, register,initiate_cross_city_donation, cross_city_donation_status, confirm_donation, manage_cross_city_transfers, mark_as_transferred, mark_as_received,register_patient, patient_dashboard
 from django.contrib.auth import views as auth_views
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 
 
 urlpatterns = [
@@ -72,5 +74,17 @@ urlpatterns = [
     path('organize-camp/', views.organize_camp, name='organize_camp'),
     path('camp-confirmation/', views.camp_confirmation, name='camp_confirmation'),
 
+
+
+    # ... intercity donations ...
+    path('cross-city-donation/', initiate_cross_city_donation, name='initiate_cross_city_donation'),
+    path('cross-city-donation/<int:donation_id>/', cross_city_donation_status, name='cross_city_donation_status'),
+    path('cross-city-donation/<int:donation_id>/confirm/', confirm_donation, name='confirm_donation'),
+    path('admin/cross-city-donations/', manage_cross_city_transfers, name='manage_cross_city_transfers'),
+    path('admin/cross-city-donations/<int:donation_id>/transferred/', mark_as_transferred, name='mark_as_transferred'),
+    path('admin/cross-city-donations/<int:donation_id>/received/', mark_as_received, name='mark_as_received'),
+    path('cross-city-donation/<int:donation_id>/check-status/', cross_city_donation_status, name='check_donation_status'),
     # <-- create this view if not done
+    path('patient/register/', register_patient, name='register_patient'),
+    path('patient/dashboard/', login_required(patient_dashboard), name='patient_dashboard'),
 ]

@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db import transaction
 from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q, Sum
 from django.views.generic import CreateView
-from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile,BloodDonationMatch,BloodDonationCamp,BloodInventory
-from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm,DonationOfferForm,DonationOffer,BloodDonationCampForm,BloodDonorForm
+from .models import BloodDonor, BloodCamp, BloodBank, Hospital, BloodRequest, UserProfile,BloodDonationMatch,BloodDonationCamp,BloodInventory,CrossCityDonation,Patient
+from .forms import DonationForm, DonorRegistrationForm, BloodRequestForm,DonationOfferForm,DonationOffer,BloodDonationCampForm,BloodDonorForm,CrossCityDonationForm,PatientRegistrationForm,PatientProfileForm
 from datetime import date
 from bloodbank.utils.geocoding import get_coordinates
 from rest_framework.decorators import api_view
@@ -594,3 +596,124 @@ def hospital_detail(request, pk):
         'inventory': inventory,
     })
 
+# intercity
+
+@login_required
+def initiate_cross_city_donation(request):
+    if request.method == 'POST':
+        form = CrossCityDonationForm(request.POST, user=request.user)
+        if form.is_valid():
+            with transaction.atomic():
+                donation = form.save(commit=False)
+                donation.donor = request.user
+                donation.donor_city = request.user.userprofile.city
+                donation.donor_blood_bank = BloodBank.objects.filter(city=request.user.userprofile.city).first()
+                donation.save()
+
+                # Send notifications (you'll need to implement this)
+                send_donation_initiated_notification(donation)
+
+                messages.success(request, "Cross-city donation initiated successfully!")
+                return redirect('cross_city_donation_status', donation_id=donation.id)
+    else:
+        form = CrossCityDonationForm(user=request.user)
+
+    return render(request, 'cross_city_donation/initiate.html', {'form': form})
+
+
+@login_required
+def cross_city_donation_status(request, donation_id):
+    donation = get_object_or_404(CrossCityDonation, id=donation_id, donor=request.user)
+    return render(request, 'cross_city_donation/status.html', {'donation': donation})
+
+
+@login_required
+def confirm_donation(request, donation_id):
+    donation = get_object_or_404(CrossCityDonation, id=donation_id, donor=request.user)
+    if request.method == 'POST':
+        donation.status = 'donated'
+        donation.donation_date = date.today()
+        donation.save()
+        donation.update_inventory()
+        messages.success(request, "Thank you for your donation!")
+        return redirect('cross_city_donation_status', donation_id=donation.id)
+    return render(request, 'cross_city_donation/confirm.html', {'donation': donation})
+
+
+# Admin view to manage transfers
+@staff_member_required
+def manage_cross_city_transfers(request):
+    donations = CrossCityDonation.objects.filter(status='donated').order_by('donation_date')
+    return render(request, 'cross_city_donation/admin/manage.html', {'donations': donations})
+
+
+@staff_member_required
+def mark_as_transferred(request, donation_id):
+    donation = get_object_or_404(CrossCityDonation, id=donation_id)
+    if request.method == 'POST':
+        donation.status = 'transferred'
+        donation.save()
+        messages.success(request, "Donation marked as transferred")
+    return redirect('manage_cross_city_transfers')
+
+
+@staff_member_required
+def mark_as_received(request, donation_id):
+    donation = get_object_or_404(CrossCityDonation, id=donation_id)
+    if request.method == 'POST':
+        donation.status = 'received'
+        donation.received_date = date.today()
+        donation.save()
+        donation.update_inventory()
+        messages.success(request, "Donation marked as received")
+    return redirect('manage_cross_city_transfers')
+
+# real time updates
+@login_required
+def check_donation_status(request, donation_id):
+    donation = get_object_or_404(CrossCityDonation, id=donation_id, donor=request.user)
+    return JsonResponse({
+        'status': donation.status,
+        'status_display': donation.get_status_display(),
+        'updated_at': donation.updated_at
+    })
+#intercity complete
+
+# patient
+
+
+def register_patient(request):
+    if request.method == 'POST':
+        user_form = PatientRegistrationForm(request.POST)
+        profile_form = PatientProfileForm(request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+
+            # Create patient profile
+            patient = profile_form.save(commit=False)
+            patient.user = user
+            patient.first_name = user_form.cleaned_data['first_name']
+            patient.last_name = user_form.cleaned_data['last_name']
+            patient.date_of_birth = user_form.cleaned_data['date_of_birth']
+            patient.phone_number = user_form.cleaned_data['phone_number']
+            patient.email = user_form.cleaned_data['email']
+            patient.save()
+
+            # Log the user in
+            login(request, user)
+            return redirect('patient_dashboard')
+    else:
+        user_form = PatientRegistrationForm()
+        profile_form = PatientProfileForm()
+
+    return render(request, 'patients/register.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
+
+
+@login_required
+def patient_dashboard(request):
+    patient = get_object_or_404(Patient, user=request.user)
+    return render(request, 'patients/dashboard.html', {'patient': patient})
