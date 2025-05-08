@@ -1,8 +1,10 @@
 from django import forms
 from django.core.validators import MinValueValidator, MaxValueValidator
-from .models import BloodDonor, Donation, BloodRequest,DonationOffer, BloodDonationCamp
+from .models import BloodDonor, Donation, BloodRequest,DonationOffer, BloodDonationCamp,CrossCityDonation,Patient
 from django.utils import timezone
 from datetime import date
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 BLOOD_GROUP_CHOICES = [
     ('A+', 'A+'), ('A-', 'A-'),
@@ -39,10 +41,12 @@ class BloodDonorForm(forms.ModelForm):
         widgets = {
             'blood_group': forms.Select(attrs={'class': 'form-select'}),
             'address': forms.Textarea(attrs={'rows': 3}),
+            'donor_city': forms.TextInput(attrs={'placeholder': 'Enter city name'}),
         }
         labels = {
             'blood_group': 'Blood Type',
-            'contact_number': 'Phone Number'
+            'contact_number': 'Phone Number',
+            'donor_city': 'City'
         }
 
 
@@ -70,8 +74,6 @@ class DonationForm(forms.ModelForm):
         return quantity
 
 
-from django import forms
-from .models import BloodRequest
 
 
 class BloodRequestForm(forms.ModelForm):
@@ -229,3 +231,51 @@ class BloodDonationCampForm(forms.ModelForm):
         if start_time and end_time and start_time >= end_time:
             raise forms.ValidationError("End time must be later than start time.")
         return cleaned_data
+
+# intercity donation
+
+class CrossCityDonationForm(forms.ModelForm):
+    class Meta:
+        model = CrossCityDonation
+        fields = [
+            'donor', 'donor_city', 'patient', 'state_name',
+            'patient_city', 'blood_type', 'units', 'patient_blood_bank', 'donor_blood_bank'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user:
+            user_profile = user.userprofile
+            if hasattr(user_profile, 'city'):
+                self.fields['donor_city'].initial = user_profile.city
+                self.fields['donor_blood_bank'].queryset = BloodBank.objects.filter(city=user_profile.city)
+
+
+
+#patient
+class PatientRegistrationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=100, required=True)
+    last_name = forms.CharField(max_length=100, required=True)
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    phone_number = forms.CharField(max_length=15)
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2',
+                 'first_name', 'last_name', 'date_of_birth', 'phone_number')
+
+class PatientProfileForm(forms.ModelForm):
+    class Meta:
+        model = Patient
+        fields = ['gender', 'blood_type', 'address_line1', 'address_line2',
+                'city', 'state', 'postal_code', 'country', 'preferred_hospital',
+                'preferred_blood_bank', 'medical_history', 'current_medications',
+                'allergies', 'emergency_contact_name', 'emergency_contact_relation',
+                'emergency_contact_phone']
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
+

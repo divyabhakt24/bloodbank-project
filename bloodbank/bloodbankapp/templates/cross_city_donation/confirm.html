@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Confirm Your Donation</h2>
+<div class="card">
+    <div class="card-body">
+        <p>Please confirm that you have donated {{ donation.units }} units of {{ donation.blood_type }} blood at:</p>
+        <address>
+            {{ donation.donor_blood_bank.name }}<br>
+            {{ donation.donor_blood_bank.address }}
+        </address>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Confirm Donation</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

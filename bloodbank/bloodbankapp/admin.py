@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     BloodDonor, BloodCamp, BloodRequest, Donation,
-    Hospital,BloodBank,BloodDonationCamp,BloodInventory
+    Hospital,BloodBank,BloodDonationCamp,BloodInventory,Patient
 )
 from .admin_utis import ExportCsvMixin
 from django.utils.html import format_html
@@ -169,3 +169,28 @@ class BloodInventoryAdmin(admin.ModelAdmin):
     list_display = ('blood_type', 'units_available', 'hospital', 'blood_bank')
     list_filter = ('blood_type',)
     search_fields = ('hospital__name', 'blood_bank__name')
+
+class PatientAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'last_name', 'blood_type', 'city', 'age')
+    list_filter = ('blood_type', 'city', 'gender')
+    search_fields = ('first_name', 'last_name', 'email', 'phone_number')
+    readonly_fields = ('age',)
+    fieldsets = (
+        ('Personal Information', {
+            'fields': ('user', 'first_name', 'last_name', 'date_of_birth', 'gender', 'blood_type')
+        }),
+        ('Contact Information', {
+            'fields': ('phone_number', 'email', 'address_line1', 'address_line2',
+                      'city', 'state', 'postal_code', 'country')
+        }),
+        ('Medical Information', {
+            'fields': ('primary_physician', 'medical_history',
+                       'current_medications', 'allergies')
+        }),
+        ('Emergency Contact', {
+            'fields': ('emergency_contact_name', 'emergency_contact_relation',
+                      'emergency_contact_phone')
+        }),
+    )
+
+admin.site.register(Patient, PatientAdmin)

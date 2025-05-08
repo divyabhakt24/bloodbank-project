@@ -21,7 +21,8 @@ class BloodDonor(models.Model):
         ('AB+', 'AB+'), ('AB-', 'AB-')
     ]
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,null=True, blank=True)
+    donor_city = models.CharField(max_length=100,null=True, blank=True)
     age = models.IntegerField(validators=[MinValueValidator(18), MaxValueValidator(65)])  # Ensure valid age
     blood_group = models.CharField(max_length=3, choices=BLOOD_GROUPS)  # Use predefined choices
     contact_number = models.CharField(
@@ -319,6 +320,80 @@ class BloodInventory(models.Model):
         unique_together = (('hospital', 'blood_type'), ('blood_bank', 'blood_type'))
 
 
+# Patients
+class Patient(models.Model):
+    BLOOD_TYPES = [
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+    ]
+
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+        ('U', 'Prefer not to say')
+    ]
+
+    # Basic Information
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_profile', null=True, blank=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    date_of_birth = models.DateField()
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    blood_type = models.CharField(max_length=3, choices=BLOOD_TYPES)
+
+    # Contact Information
+    phone_number = models.CharField(max_length=15, validators=[RegexValidator(r'^\+?\d{10,15}$', 'Enter a valid phone number')])
+    alternate_phone = models.CharField(max_length=15, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+
+    # Address Information
+    address_line1 = models.CharField(max_length=255)
+    address_line2 = models.CharField(max_length=255, blank=True, null=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    state = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=100, default='India')
+
+    # Medical Information
+    primary_physician = models.CharField(max_length=255, blank=True, null=True)
+    medical_history = models.TextField(blank=True, null=True)
+    current_medications = models.TextField(blank=True, null=True)
+    allergies = models.TextField(blank=True, null=True)
+
+    # Hospital Information
+    preferred_hospital = models.ForeignKey(Hospital, on_delete=models.SET_NULL, null=True, blank=True)
+    preferred_blood_bank = models.ForeignKey(BloodBank, on_delete=models.SET_NULL, null=True, blank=True)
+
+    # Emergency Contact
+    emergency_contact_name = models.CharField(max_length=255)
+    emergency_contact_relation = models.CharField(max_length=100)
+    emergency_contact_phone = models.CharField(max_length=15)
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.blood_type})"
+
+    @property
+    def age(self):
+        today = date.today()
+        return today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
+
+    class Meta:
+        verbose_name = "Patient"
+        verbose_name_plural = "Patients"
+        ordering = ['last_name', 'first_name']
+
+
 # Intercity Blood Donation
 class CrossCityDonation(models.Model):
     STATUS_CHOICES = [
@@ -329,18 +404,20 @@ class CrossCityDonation(models.Model):
         ('cancelled', 'Cancelled'),
     ]
 
-    donor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cross_city_donations')
-    donor_city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='donor_city')
-    patient_city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='patient_city')
-    blood_type = models.CharField(max_length=3, choices=BloodDonor.BLOOD_GROUPS)
-    units = models.PositiveIntegerField()
-    donor_blood_bank = models.ForeignKey(BloodBank, on_delete=models.CASCADE, related_name='donor_blood_bank')
-    patient_blood_bank = models.ForeignKey(BloodBank, on_delete=models.CASCADE, related_name='patient_blood_bank')
-    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='initiated')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    donor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cross_city_donations',null=True, blank=True)
+    donor_city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='donor_city',null=True, blank=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='cross_city_donations',null=True, blank=True)
+    patient_city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='patient_city',null=True, blank=True)
+    blood_type = models.CharField(max_length=3, choices=BloodDonor.BLOOD_GROUPS,null=True, blank=True)
+    units = models.PositiveIntegerField(null=True, blank=True)
+    donor_blood_bank = models.ForeignKey(BloodBank, on_delete=models.CASCADE, related_name='donor_blood_bank',null=True, blank=True)
+    patient_blood_bank = models.ForeignKey(BloodBank, on_delete=models.CASCADE, related_name='patient_blood_bank',null=True, blank=True)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='initiated',null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True,null=True, blank=True)
     donation_date = models.DateField(null=True, blank=True)
     received_date = models.DateField(null=True, blank=True)
+    state_name = models.CharField(max_length=100,null=True, blank=True)
 
     def __str__(self):
         return f"Donation from {self.donor_city} to {self.patient_city} ({self.blood_type})"
@@ -372,3 +449,5 @@ class CrossCityDonation(models.Model):
             )
             patient_inventory.units_available += self.units
             patient_inventory.save()
+
+

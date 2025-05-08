@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Donation Status</h2>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Donation from {{ donation.donor_city }} to {{ donation.patient_city }}</h5>
+        <p class="card-text">
+            <strong>Blood Type:</strong> {{ donation.blood_type }}<br>
+            <strong>Units:</strong> {{ donation.units }}<br>
+            <strong>Status:</strong> {{ donation.get_status_display }}<br>
+            {% if donation.donation_date %}
+            <strong>Donated on:</strong> {{ donation.donation_date }}<br>
+            {% endif %}
+        </p>
+
+        {% if donation.status == 'initiated' %}
+        <a href="{% url 'confirm_donation' donation.id %}" class="btn btn-primary">
+            Confirm Donation
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+<script>
+function checkStatus() {
+    fetch("{% url 'check_donation_status' donation.id %}")
+        .then(response => response.json())
+        .then(data => {
+            // Update status display
+            document.getElementById('status-display').textContent = data.status_display;
+
+            // If status changed, you might want to reload the page
+            if (data.status !== "{{ donation.status }}") {
+                location.reload();
+            }
+        });
+}
+
+// Check every 30 seconds
+setInterval(checkStatus, 30000);
+</script>
