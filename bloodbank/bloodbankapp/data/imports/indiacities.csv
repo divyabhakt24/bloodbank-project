@@ -1,0 +1,163 @@
+name,latitude,longitude,country,state
+Delhi,28.61,77.23,India,Delhi
+Mumbai,19.0761,72.8775,India,Mahārāshtra
+Kolkāta,22.5675,88.37,India,West Bengal
+Bangalore,12.9789,77.5917,India,Karnātaka
+Chennai,13.0825,80.275,India,Tamil Nādu
+Hyderābād,17.3617,78.4747,India,Telangāna
+Pune,18.5203,73.8567,India,Mahārāshtra
+Ahmedabad,23.0225,72.5714,India,Gujarāt
+Sūrat,21.1702,72.8311,India,Gujarāt
+Lucknow,26.85,80.95,India,Uttar Pradesh
+Jaipur,26.9,75.8,India,Rājasthān
+Kanpur,26.4499,80.3319,India,Uttar Pradesh
+Mirzāpur,25.146,82.569,India,Uttar Pradesh
+Nāgpur,21.1497,79.0806,India,Mahārāshtra
+Ghāziābād,28.67,77.42,India,Uttar Pradesh
+Supaul,26.126,86.605,India,Bihār
+Vadodara,22.3,73.2,India,Gujarāt
+Rājkot,22.3,70.7833,India,Gujarāt
+Vishākhapatnam,17.7042,83.2978,India,Andhra Pradesh
+Indore,22.7167,75.8472,India,Madhya Pradesh
+Thāne,19.1972,72.9722,India,Mahārāshtra
+Bhopāl,23.2599,77.4126,India,Madhya Pradesh
+Pimpri-Chinchwad,18.6186,73.8037,India,Mahārāshtra
+Patna,25.594,85.1376,India,Bihār
+Bilāspur,22.09,82.15,India,Chhattīsgarh
+Ludhiāna,30.91,75.85,India,Punjab
+Āgra,27.18,78.02,India,Uttar Pradesh
+Madurai,9.9252,78.1198,India,Tamil Nādu
+Jamshedpur,22.7925,86.1842,India,Jhārkhand
+Prayagraj,25.4358,81.8464,India,Uttar Pradesh
+Nāsik,19.9975,73.7898,India,Mahārāshtra
+Farīdābād,28.4211,77.3078,India,Haryāna
+Meerut,28.98,77.71,India,Uttar Pradesh
+Jabalpur,23.1667,79.9333,India,Madhya Pradesh
+Kalyān,19.2502,73.1602,India,Mahārāshtra
+Vasai-Virar,19.3607,72.7956,India,Mahārāshtra
+Najafgarh,28.6092,76.9798,India,Delhi
+Vārānasi,25.3189,83.0128,India,Uttar Pradesh
+Srīnagar,34.09,74.79,India,Jammu and Kashmīr
+Aurangābād,19.88,75.32,India,Mahārāshtra
+Dhanbād,23.7998,86.4305,India,Jhārkhand
+Amritsar,31.64,74.86,India,Punjab
+Alīgarh,27.88,78.08,India,Uttar Pradesh
+Guwāhāti,26.1722,91.7458,India,Assam
+Hāora,22.58,88.3294,India,West Bengal
+Rānchi,23.36,85.33,India,Jhārkhand
+Gwalior,26.2124,78.1772,India,Madhya Pradesh
+Chandīgarh,30.75,76.78,India,Chandīgarh
+Haldwāni,29.22,79.52,India,Uttarākhand
+Vijayavāda,16.5193,80.6305,India,Andhra Pradesh
+Jodhpur,26.28,73.02,India,Rājasthān
+Raipur,21.2444,81.6306,India,Chhattīsgarh
+Kota,25.18,75.83,India,Rājasthān
+Bhayandar,19.29,72.85,India,Mahārāshtra
+Loni,28.75,77.28,India,Uttar Pradesh
+Ambattūr,13.1143,80.1548,India,Tamil Nādu
+Salt Lake City,22.61,88.4,India,West Bengal
+Bhātpāra,22.87,88.41,India,West Bengal
+Kūkatpalli,17.4849,78.4138,India,Telangāna
+Dāsarhalli,13.0465,77.513,India,Karnātaka
+Muzaffarpur,26.1225,85.3906,India,Bihār
+Oulgaret,11.957,79.7737,India,Tamil Nādu
+New Delhi,28.6139,77.2089,India,Delhi
+Tiruvottiyūr,13.16,80.3,India,Tamil Nādu
+Puducherry,11.9167,79.8167,India,Puducherry
+Byatarayanpur,13.0659,77.5922,India,Karnātaka
+Pallāvaram,12.9675,80.1491,India,Tamil Nādu
+Secunderābād,17.4399,78.4983,India,Telangāna
+Shimla,31.1033,77.1722,India,Himāchal Pradesh
+Puri,19.8,85.8167,India,Odisha
+Murtazābād,28.7111,77.2688,India,Uttar Pradesh
+Shrīrāmpur,22.75,88.34,India,West Bengal
+Chandannagar,22.87,88.38,India,West Bengal
+Sultānpur Mazra,28.6981,77.0689,India,Delhi
+Krishnanagar,23.4,88.5,India,West Bengal
+Bārākpur,22.76,88.37,India,West Bengal
+Bhālswa Jahangirpur,28.7354,77.1638,India,Delhi
+Nāngloi Jāt,28.6833,77.0667,India,Delhi
+Balasore,21.5033,86.925,India,Odisha
+Dalūpura,28.6004,77.3194,India,Delhi
+Yelahanka,13.1007,77.5963,India,Karnātaka
+Titāgarh,22.74,88.37,India,West Bengal
+Dam Dam,22.62,88.42,India,West Bengal
+Bānsbāria,22.97,88.4,India,West Bengal
+Madhavaram,13.1482,80.2314,India,Tamil Nādu
+Abbigeri,13.0767,77.525,India,Karnātaka
+Baj Baj,22.4828,88.1818,India,West Bengal
+Garhi,28.6317,77.3186,India,Uttar Pradesh
+Mīrpeta,17.32,78.52,India,Telangāna
+Nerkunram,13.0619,80.2094,India,Tamil Nādu
+Kendrāparha,20.5,86.42,India,Odisha
+Sijua,23.7762,86.3303,India,Jhārkhand
+Manali,13.1667,80.2667,India,Tamil Nādu
+Kānkuria,24.6523,87.9604,India,West Bengal
+Chakapara,22.63,88.35,India,West Bengal
+Pāppākurichchi,10.8137,78.7481,India,Tamil Nādu
+Herohalli,12.9911,77.4873,India,Karnātaka
+Madipakkam,12.9623,80.1986,India,Tamil Nādu
+Sabalpur,25.6053,85.1835,India,Bihār
+Bāuria,22.4521,88.1853,India,West Bengal
+Salua,22.61,88.27,India,West Bengal
+Chik Bānavar,13.0846,77.5014,India,Karnātaka
+Jālhalli,13.0333,77.55,India,Karnātaka
+Chinnasekkadu,13.1609,80.2573,India,Tamil Nādu
+Jethuli,25.5378,85.2841,India,Bihār
+Nagtala,22.4667,88.3833,India,West Bengal
+Pakri,25.5876,85.158,India,Bihār
+Hunasamaranhalli,13.1435,77.62,India,Karnātaka
+Hesarghatta,13.1391,77.4783,India,Karnātaka
+Bommayapālaiyam,11.9922,79.8499,India,Tamil Nādu
+Gundūr,10.7339,78.7184,India,Tamil Nādu
+Punādih,25.5484,85.2649,India,Bihār
+Harilādih,23.7333,86.4,India,Jhārkhand
+Alāwalpur,25.4958,85.2021,India,Bihār
+Mādnāikanhalli,13.0626,77.4642,India,Karnātaka
+Bāgalūr,13.133,77.666,India,Karnātaka
+Kādiganahalli,13.1687,77.6283,India,Karnātaka
+Khānpur Zabti,28.7103,77.2781,India,Uttar Pradesh
+Mahuli,25.543,85.2268,India,Bihār
+Zeyādah Kot,22.4445,88.3345,India,West Bengal
+Arshakunti,13.0785,77.4225,India,Karnātaka
+Mirchi,25.5554,85.2139,India,Bihār
+Sonudih,25.1155,87.0214,India,Bihār
+Bayandhalli,12.9779,77.5688,India,Karnātaka
+Sondekoppa,13,77.3667,India,Karnātaka
+Babura,25.0851,87.1092,India,Bihār
+Mādavar,13.0525,77.4732,India,Karnātaka
+Kadabgeri,12.9965,77.4331,India,Karnātaka
+Nanmangalam,12.9381,80.1753,India,Tamil Nādu
+Taliganja,22.5041,88.3598,India,West Bengal
+Tarchha,25.1116,87.0964,India,Bihār
+Belgharia,22.6581,88.3852,India,West Bengal
+Kammanhalli,13.0155,77.6381,India,Karnātaka
+Ambāpuram,16.599,80.8938,India,Andhra Pradesh
+Sonnappanhalli,13.1557,77.6179,India,Karnātaka
+Kedihāti,22.6508,88.4608,India,West Bengal
+Doddajīvanhalli,13.0086,77.6143,India,Karnātaka
+Simli Murārpur,25.5792,85.2401,India,Bihār
+Sonāwān,25.5445,85.2387,India,Bihār
+Devanandapur,22.9326,88.3729,India,West Bengal
+Tribeni,22.9867,88.3987,India,West Bengal
+Huttanhalli,13.1651,77.6512,India,Karnātaka
+Nathupur,25.5163,85.2544,India,Bihār
+Bāli,25.481,85.2227,India,Bihār
+Vājarhalli,13.1022,77.4111,India,Karnātaka
+Alija Kotla,17.2333,78.55,India,Telangāna
+Saino,25.1134,87.0108,India,Bihār
+Shekhpura,25.5725,85.1428,India,Bihār
+Cāchohalli,13.001,77.4717,India,Karnātaka
+Andheri,19.2104,73.0464,India,Mahārāshtra
+Nārāyanpur Kola,25.1293,87.0076,India,Bihār
+Gyan Chak,25.5496,85.2423,India,Bihār
+Kasgatpur,13.1101,77.5045,India,Karnātaka
+Kitanelli,13.0095,77.4191,India,Karnātaka
+Harchandi,25.1,87.0442,India,Bihār
+Santoshpur,22.465,88.2193,India,West Bengal
+Bendravādi,12.3636,76.9137,India,Karnātaka
+Kodagihalli,12.9771,77.4651,India,Karnātaka
+Harna Buzurg,25.0981,87.0148,India,Bihār
+Mailanhalli,13.1863,77.6963,India,Karnātaka
+Sultānpur,25.5248,85.2507,India,Bihār
+Adakimāranhalli,13.0633,77.4417,India,Karnātaka

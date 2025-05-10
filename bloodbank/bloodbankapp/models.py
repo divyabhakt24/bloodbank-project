@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.utils import timezone
 from django.contrib.auth.models import User
+from datetime import date  # Add this import at the top of models.py
 
 
 class City(models.Model):
@@ -149,7 +150,7 @@ class BloodBank(models.Model):
     district = models.TextField(max_length=30,null=True,blank=True)
     address = models.TextField(null=True, blank=True)
     pincode = models.BigIntegerField (blank=True,null=True)
-
+    city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, blank=True)
     mobile = models.BigIntegerField(blank=True,null=True)
     email = models.EmailField(
         blank=True,
@@ -227,10 +228,11 @@ class BloodRequest(models.Model):
 
 
 class UserProfile(models.Model):
+    name = models.CharField(max_length=255,null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bank = models.ForeignKey('BloodBank', on_delete=models.SET_NULL, null=True, blank=True)
     hospital = models.ForeignKey('Hospital', on_delete=models.SET_NULL, null=True, blank=True)
-
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return self.user.username
 
@@ -386,8 +388,9 @@ class Patient(models.Model):
     @property
     def age(self):
         today = date.today()
-        return today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
-
+        return today.year - self.date_of_birth.year - (
+                (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
+        )
     class Meta:
         verbose_name = "Patient"
         verbose_name_plural = "Patients"
@@ -422,9 +425,16 @@ class CrossCityDonation(models.Model):
     def __str__(self):
         return f"Donation from {self.donor_city} to {self.patient_city} ({self.blood_type})"
 
+    # models.py
     def update_inventory(self):
+        if not self.blood_type:  # Add validation
+            raise ValueError("Blood type is required for inventory updates")
+
         if self.status == 'donated':
-            # Reduce inventory at donor's blood bank
+            # Ensure donor_blood_bank exists
+            if not self.donor_blood_bank:
+                raise ValueError("Donor blood bank is required")
+
             donor_inventory, created = BloodInventory.objects.get_or_create(
                 blood_bank=self.donor_blood_bank,
                 blood_type=self.blood_type,
@@ -434,14 +444,22 @@ class CrossCityDonation(models.Model):
             donor_inventory.save()
 
         elif self.status == 'received':
-            # Reduce inventory at donor's blood bank and increase at patient's
-            donor_inventory = BloodInventory.objects.get(
-                blood_bank=self.donor_blood_bank,
-                blood_type=self.blood_type
-            )
-            donor_inventory.units_available -= self.units
-            donor_inventory.save()
+            # Ensure both banks exist
+            if not self.donor_blood_bank or not self.patient_blood_bank:
+                raise ValueError("Both blood banks are required for transfer")
 
+            # Get donor inventory (must exist)
+            try:
+                donor_inventory = BloodInventory.objects.get(
+                    blood_bank=self.donor_blood_bank,
+                    blood_type=self.blood_type
+                )
+                donor_inventory.units_available -= self.units
+                donor_inventory.save()
+            except BloodInventory.DoesNotExist:
+                raise ValueError("Donor inventory not found")
+
+            # Get or create patient inventory
             patient_inventory, created = BloodInventory.objects.get_or_create(
                 blood_bank=self.patient_blood_bank,
                 blood_type=self.blood_type,
@@ -449,5 +467,19 @@ class CrossCityDonation(models.Model):
             )
             patient_inventory.units_available += self.units
             patient_inventory.save()
+
+    def clean(self):
+        if not self.blood_type:
+            raise ValidationError("Blood type is required")
+
+        if self.status == 'donated' and not self.donor_blood_bank:
+            raise ValidationError("Donor blood bank is required for donated status")
+
+        if self.status == 'received' and not self.patient_blood_bank:
+            raise ValidationError("Patient blood bank is required for received status")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Run model validation
+        super().save(*args, **kwargs)
 
 
