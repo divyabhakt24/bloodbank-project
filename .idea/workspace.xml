@@ -5,13 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="778ac18e-a4bc-4347-a700-34c26d5873fc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/data/imports/hospitals.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/verify_hospitals_csv.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/hospitals.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/app_schema.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbank/d.pub.pub" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/data/imports/indiacities.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/migrations/0016_userprofile_city.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/migrations/0017_bloodbank_city.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/migrations/0018_userprofile_name.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/notifications.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/request_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bloodbank/schema.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/import_hospitals.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/import_hospitals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbank/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbank/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/data/imports/.~lock.blood-banks.csv#" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/import_cities_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/import_cities_api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/cross_city_donation/initiate.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/cross_city_donation/initiate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/my_blood_requests.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/my_blood_requests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,16 +48,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "divya",
-    "last_opened_file_path": "/home/divya/PycharmProjects/BloodBank/bloodbank/bloodbankapp/data"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;divya&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/divya/PycharmProjects/quiz-application&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/bloodbank/bloodbankapp/data/imports" />
       <recent name="$PROJECT_DIR$/bloodbank/bloodbankapp/data" />
       <recent name="$PROJECT_DIR$/bloodbank" />
     </key>
@@ -76,6 +92,20 @@
           <url>file://$PROJECT_DIR$/bloodbank/bloodbank/urls.py</url>
           <line>16</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bloodbank/bloodbankapp/models.py</url>
+          <line>186</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bloodbank/bloodbankapp/models.py</url>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bloodbank/bloodbankapp/notifications.py</url>
+          <line>7</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

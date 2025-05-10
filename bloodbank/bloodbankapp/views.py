@@ -19,6 +19,8 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from geopy.distance import geodesic
+from .notifications import send_donation_initiated_notification
+from .utils import get_user_display_name
 
 
 def home(request):
@@ -383,6 +385,10 @@ def request_donor(request, pk):
     # Add your request logic here
     return render(request, 'request_donor.html', {'donor': donor})
 
+def request_detail(request, request_id):
+    blood_request = get_object_or_404(BloodRequest, id=request_id)
+    return render(request, 'request_detail.html', {'request': blood_request})
+
 import folium
 import math
 
@@ -606,19 +612,22 @@ def initiate_cross_city_donation(request):
             with transaction.atomic():
                 donation = form.save(commit=False)
                 donation.donor = request.user
-                donation.donor_city = request.user.userprofile.city
-                donation.donor_blood_bank = BloodBank.objects.filter(city=request.user.userprofile.city).first()
+
+                # Ensure donor_city is set from user profile
+                if hasattr(request.user, 'userprofile') and request.user.userprofile.city:
+                    donation.donor_city = request.user.userprofile.city
+
                 donation.save()
-
-                # Send notifications (you'll need to implement this)
                 send_donation_initiated_notification(donation)
-
                 messages.success(request, "Cross-city donation initiated successfully!")
                 return redirect('cross_city_donation_status', donation_id=donation.id)
     else:
         form = CrossCityDonationForm(user=request.user)
 
-    return render(request, 'cross_city_donation/initiate.html', {'form': form})
+    return render(request, 'cross_city_donation/initiate.html', {
+        'form': form,
+        'user_city': request.user.userprofile.city if hasattr(request.user, 'userprofile') else None
+    })
 
 
 @login_required
@@ -627,18 +636,39 @@ def cross_city_donation_status(request, donation_id):
     return render(request, 'cross_city_donation/status.html', {'donation': donation})
 
 
+# views.py
 @login_required
 def confirm_donation(request, donation_id):
     donation = get_object_or_404(CrossCityDonation, id=donation_id, donor=request.user)
-    if request.method == 'POST':
-        donation.status = 'donated'
-        donation.donation_date = date.today()
-        donation.save()
-        donation.update_inventory()
-        messages.success(request, "Thank you for your donation!")
-        return redirect('cross_city_donation_status', donation_id=donation.id)
-    return render(request, 'cross_city_donation/confirm.html', {'donation': donation})
 
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                # Validate required fields
+                if not donation.blood_type:
+                    messages.error(request, "Blood type is required")
+                    return redirect('cross_city_donation_status', donation_id=donation.id)
+
+                if not donation.donor_blood_bank:
+                    messages.error(request, "Donor blood bank is required")
+                    return redirect('cross_city_donation_status', donation_id=donation.id)
+
+                # Update donation
+                donation.status = 'donated'
+                donation.donation_date = date.today()
+                donation.save()
+
+                # Update inventory
+                donation.update_inventory()
+
+                messages.success(request, "Thank you for your donation!")
+                return redirect('cross_city_donation_status', donation_id=donation.id)
+
+        except Exception as e:
+            messages.error(request, f"Error confirming donation: {str(e)}")
+            return redirect('cross_city_donation_status', donation_id=donation.id)
+
+    return render(request, 'cross_city_donation/confirm.html', {'donation': donation})
 
 # Admin view to manage transfers
 @staff_member_required
@@ -717,3 +747,4 @@ def register_patient(request):
 def patient_dashboard(request):
     patient = get_object_or_404(Patient, user=request.user)
     return render(request, 'patients/dashboard.html', {'patient': patient})
+

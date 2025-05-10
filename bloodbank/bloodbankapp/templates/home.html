@@ -12,62 +12,80 @@
             <a href="{% url 'donate' %}" class="btn btn-light btn-lg px-4 fw-bold">Become a Hero</a>
         </div>
     </section>
-
-    <!-- Blood Donation Info Section -->
-    <section class="py-5 bg-light">
+<!-- Explore Our Network Section -->
+    <section class="py-5 bg-white">
         <div class="container">
-            <h2 class="text-center text-danger mb-5">Want to Know About Blood Donation?</h2>
+            <h2 class="text-center text-danger mb-5">Explore Our Network</h2>
             <div class="row g-4">
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="icon-circle bg-danger mb-3 mx-auto">
-                                <i class="fas fa-user-plus fa-2x text-white"></i>
+                    <a href="{% url 'blood_camps' %}" class="text-decoration-none">
+                        <div class="card h-100 border-0 shadow-sm hover-effect">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle bg-danger mb-3 mx-auto">
+                                    <i class="fas fa-calendar-alt fa-2x text-white"></i>
+                                </div>
+                                <h5 class="card-title">Blood Camps</h5>
+                                <p class="card-text text-muted">Find upcoming donation events near you</p>
                             </div>
-                            <h5 class="card-title">Being a Donor</h5>
-                            <p class="card-text">Learn about blood donors and their impact</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="icon-circle bg-danger mb-3 mx-auto">
-                                <i class="fas fa-check-circle fa-2x text-white"></i>
+                    <a href="{% url 'bloodbank_list' %}" class="text-decoration-none">
+                        <div class="card h-100 border-0 shadow-sm hover-effect">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle bg-danger mb-3 mx-auto">
+                                    <i class="fas fa-tint fa-2x text-white"></i>
+                                </div>
+                                <h5 class="card-title">Blood Banks</h5>
+                                <p class="card-text text-muted">Locate blood banks and check inventory</p>
                             </div>
-                            <h5 class="card-title">Eligibility Requirements</h5>
-                            <p class="card-text">Check if you qualify to donate</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="icon-circle bg-danger mb-3 mx-auto">
-                                <i class="fas fa-procedures fa-2x text-white"></i>
+                    <a href="{% url 'donors_list' %}" class="text-decoration-none">
+                        <div class="card h-100 border-0 shadow-sm hover-effect">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle bg-danger mb-3 mx-auto">
+                                    <i class="fas fa-users fa-2x text-white"></i>
+                                </div>
+                                <h5 class="card-title">Donors</h5>
+                                <p class="card-text text-muted">Meet our community of life savers</p>
                             </div>
-                            <h5 class="card-title">Donation Process</h5>
-                            <p class="card-text">Steps for donating blood safely</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="icon-circle bg-danger mb-3 mx-auto">
-                                <i class="fas fa-question-circle fa-2x text-white"></i>
+                    <a href="{% url 'hospital_list' %}" class="text-decoration-none">
+                        <div class="card h-100 border-0 shadow-sm hover-effect">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle bg-danger mb-3 mx-auto">
+                                    <i class="fas fa-hospital fa-2x text-white"></i>
+                                </div>
+                                <h5 class="card-title">Hospitals</h5>
+                                <p class="card-text text-muted">Partner hospitals needing support</p>
                             </div>
-                            <h5 class="card-title">Any Query</h5>
-                            <p class="card-text">Get your questions answered by our experts</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
-            </div>
-            <div class="text-center mt-4">
-                <a href="#" class="btn btn-outline-danger">Learn More</a>
+                <div class="col-md-6 col-lg-3">
+                    <a href="{% url 'initiate_cross_city_donation' %}" class="text-decoration-none">
+                        <div class="card h-100 border-0 shadow-sm hover-effect">
+                            <div class="card-body text-center p-4">
+                                <div class="icon-circle bg-danger mb-3 mx-auto">
+                                    <i class="fas fa-hospital fa-2x text-white"></i>
+                                </div>
+                                <h5 class="card-title">Cross-City Donation</h5>
+                                <p class="card-text text-muted">Donate in your city to help patients in another city.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
+
 
     <!-- Blood Compatibility Section -->
     <section class="py-5 bg-white">
@@ -207,78 +225,62 @@
         </div>
     </section>
 
-    <!-- Explore Our Network Section -->
-    <section class="py-5 bg-white">
+
+<!-- Blood Donation Info Section -->
+    <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center text-danger mb-5">Explore Our Network</h2>
+            <h2 class="text-center text-danger mb-5">Want to Know About Blood Donation?</h2>
             <div class="row g-4">
                 <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'blood_camps' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
-                            <div class="card-body text-center p-4">
-                                <div class="icon-circle bg-danger mb-3 mx-auto">
-                                    <i class="fas fa-calendar-alt fa-2x text-white"></i>
-                                </div>
-                                <h5 class="card-title">Blood Camps</h5>
-                                <p class="card-text text-muted">Find upcoming donation events near you</p>
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-circle bg-danger mb-3 mx-auto">
+                                <i class="fas fa-user-plus fa-2x text-white"></i>
                             </div>
+                            <h5 class="card-title">Being a Donor</h5>
+                            <p class="card-text">Learn about blood donors and their impact</p>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'bloodbank_list' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
-                            <div class="card-body text-center p-4">
-                                <div class="icon-circle bg-danger mb-3 mx-auto">
-                                    <i class="fas fa-tint fa-2x text-white"></i>
-                                </div>
-                                <h5 class="card-title">Blood Banks</h5>
-                                <p class="card-text text-muted">Locate blood banks and check inventory</p>
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-circle bg-danger mb-3 mx-auto">
+                                <i class="fas fa-check-circle fa-2x text-white"></i>
                             </div>
+                            <h5 class="card-title">Eligibility Requirements</h5>
+                            <p class="card-text">Check if you qualify to donate</p>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'donors_list' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
-                            <div class="card-body text-center p-4">
-                                <div class="icon-circle bg-danger mb-3 mx-auto">
-                                    <i class="fas fa-users fa-2x text-white"></i>
-                                </div>
-                                <h5 class="card-title">Donors</h5>
-                                <p class="card-text text-muted">Meet our community of life savers</p>
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-circle bg-danger mb-3 mx-auto">
+                                <i class="fas fa-procedures fa-2x text-white"></i>
                             </div>
+                            <h5 class="card-title">Donation Process</h5>
+                            <p class="card-text">Steps for donating blood safely</p>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'hospital_list' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
-                            <div class="card-body text-center p-4">
-                                <div class="icon-circle bg-danger mb-3 mx-auto">
-                                    <i class="fas fa-hospital fa-2x text-white"></i>
-                                </div>
-                                <h5 class="card-title">Hospitals</h5>
-                                <p class="card-text text-muted">Partner hospitals needing support</p>
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-circle bg-danger mb-3 mx-auto">
+                                <i class="fas fa-question-circle fa-2x text-white"></i>
                             </div>
+                            <h5 class="card-title">Any Query</h5>
+                            <p class="card-text">Get your questions answered by our experts</p>
                         </div>
-                    </a>
+                    </div>
                 </div>
-                <div class="card mt-4">
-    <div class="card-body">
-        <h5 class="card-title">Cross-City Donation</h5>
-        <p class="card-text">
-            Donate in your city to help patients in another city. Your donation will be transferred to the patient's location.
-        </p>
-        <a href="{% url 'initiate_cross_city_donation' %}" class="btn btn-primary">
-            Donate Across Cities
-        </a>
-    </div>
-</div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="/about" class="btn btn-outline-danger">Learn More</a>
             </div>
         </div>
     </section>
-
     <!-- Donation Types Section -->
     <section class="py-5 bg-light">
         <div class="container">

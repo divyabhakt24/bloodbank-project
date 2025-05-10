@@ -151,3 +151,11 @@ OSM_USER_AGENT = "bloodbank_app_v1" # Unique identifier for your app
 
 
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail, change for other providers
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'bhaktdivya02@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'bloodbank'  # Use app password for Gmail
+DEFAULT_FROM_EMAIL = 'divyabhakt24@gmail.com'

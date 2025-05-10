@@ -1,26 +1,36 @@
-# management/commands/import_cities_api.py
-import requests
+import csv
 from django.core.management.base import BaseCommand
 from bloodbankapp.models import City
 
 
 class Command(BaseCommand):
-    help = 'Import cities from an API'
+    help = 'Import cities from a CSV file'
 
-    def handle(self, *args, **kwargs):
-        # Example using a geocoding API
-        api_url = "https://api.example.com/cities"
-        response = requests.get(api_url)
+    def add_arguments(self, parser):
+        parser.add_argument('file_path', type=str, help='Path to the CSV file')
 
-        if response.status_code == 200:
-            cities_data = response.json()
-            for city in cities_data:
-                City.objects.create(
-                    name=city['name'],
-                    state=city['state'],
-                    latitude=city['latitude'],
-                    longitude=city['longitude']
-                )
-            self.stdout.write(self.style.SUCCESS(f'Imported {len(cities_data)} cities'))
-        else:
-            self.stdout.write(self.style.ERROR('Failed to fetch city data'))
+    def handle(self, *args, **options):
+        # Correct way to access the file path argument
+        file_path = options['file_path']  # This is the critical fix
+
+        try:
+            with open(file_path, mode='r', encoding='utf-8') as file:
+                reader = csv.DictReader(file)
+                cities = [
+                    City(
+                        name=row['name'],
+                        state=row['state'],
+                        latitude=float(row['latitude']),
+                        longitude=float(row['longitude'])
+                    )
+                    for row in reader
+                ]
+                City.objects.bulk_create(cities)
+                self.stdout.write(self.style.SUCCESS(f'Successfully imported {len(cities)} cities'))
+
+        except FileNotFoundError:
+            self.stdout.write(self.style.ERROR(f'File not found: {file_path}'))
+        except KeyError as e:
+            self.stdout.write(self.style.ERROR(f'Missing required column in CSV: {str(e)}'))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f'Error importing cities: {str(e)}'))
