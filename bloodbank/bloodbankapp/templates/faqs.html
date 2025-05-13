@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FAQs | Blood Bank{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="text-danger mb-4">Frequently Asked Questions</h1>
+                <p class="lead">Get answers from our experts</p>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <div class="accordion" id="faqAccordion">
+                            <!-- Question 1 -->
+                            <div class="accordion-item mb-3 border-0">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button collapsed bg-light text-danger fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                        How often can I donate blood?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        You can donate whole blood every 56 days (8 weeks). Platelet donations can be made more frequently - up to 24 times per year.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 2 -->
+                            <div class="accordion-item mb-3 border-0">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed bg-light text-danger fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                        Does donating blood hurt?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        You may feel a slight pinch when the needle is inserted, but most donors report only minor discomfort during the donation process.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 3 -->
+                            <div class="accordion-item mb-3 border-0">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed bg-light text-danger fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                        How long does the donation process take?
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        The entire process takes about an hour from registration to refreshments, while the actual blood donation typically takes 8-10 minutes.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question 4 -->
+                            <div class="accordion-item mb-3 border-0">
+                                <h2 class="accordion-header" id="headingFour">
+                                    <button class="accordion-button collapsed bg-light text-danger fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                        Can I donate if I have a cold or flu?
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        No, you should wait until you are feeling well and symptom-free before donating blood.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5">
+                            <h3 class="text-danger">Still have questions?</h3>
+                            <p>Contact our donor support team for more information:</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-phone me-2 text-danger"></i> (123) 456-7890</li>
+                                <li><i class="fas fa-envelope me-2 text-danger"></i> donorsupport@bloodbank.org</li>
+                            </ul>
+                        </div>
+                        <div class="mt-5">
+                            <a href="{% url 'home' %}" class="btn btn-danger me-3">Return To Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

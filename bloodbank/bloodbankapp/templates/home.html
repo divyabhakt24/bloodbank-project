@@ -4,98 +4,132 @@
 {% block title %}Home | Blood Bank{% endblock %}
 
 {% block content %}
-    <!-- Hero Section -->
-    <section class="hero-section text-center py-5 bg-danger text-white">
-        <div class="container">
-            <h1 class="display-4 fw-bold mb-3">Your Blood Matters</h1>
-            <p class="lead mb-4">Join our mission to save lives today.</p>
-            <a href="{% url 'donate' %}" class="btn btn-light btn-lg px-4 fw-bold">Become a Hero</a>
-        </div>
-    </section>
-<!-- Explore Our Network Section -->
+   <!-- Hero Section with Wave Divider -->
+<section class="hero-section text-center py-5 bg-danger text-white position-relative">
+    <div class="container position-relative" style="z-index: 2;">  <!-- Increased z-index -->
+        <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Your Blood Matters</h1>
+        <p class="lead mb-4 animate__animated animate__fadeIn animate__delay-1s">Join our mission to save lives today</p>
+        <a href="{% url 'donate' %}" class="btn btn-light btn-lg px-4 fw-bold animate__animated animate__fadeInUp animate__delay-1s">
+            Become a Hero <i class="fas fa-heart ms-2"></i>
+        </a>
+    </div>
+    <div class="position-absolute bottom-0 start-0 end-0 wave-divider" style="z-index: 1;">  <!-- Lower z-index -->
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+        </svg>
+    </div>
+</section>
+
+    <!-- Explore Our Network Section -->
     <section class="py-5 bg-white">
         <div class="container">
-            <h2 class="text-center text-danger mb-5">Explore Our Network</h2>
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'blood_camps' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
+            <div class="text-center mb-5">
+                <h2 class="text-danger mb-3">Explore Our Network</h2>
+                <p class="text-muted">Discover how you can contribute to saving lives</p>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <!-- Blood Camps -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
+                        <a href="{% url 'blood_camps' %}" class="text-decoration-none text-dark">
                             <div class="card-body text-center p-4">
                                 <div class="icon-circle bg-danger mb-3 mx-auto">
                                     <i class="fas fa-calendar-alt fa-2x text-white"></i>
                                 </div>
-                                <h5 class="card-title">Blood Camps</h5>
-                                <p class="card-text text-muted">Find upcoming donation events near you</p>
+                                <h5 class="card-title fw-bold">Blood Camps</h5>
+                                <p class="card-text text-muted ">Find upcoming donation events</p>
+
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'bloodbank_list' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
+
+                <!-- Blood Banks -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
+                        <a href="{% url 'bloodbank_list' %}" class="text-decoration-none text-dark">
                             <div class="card-body text-center p-4">
                                 <div class="icon-circle bg-danger mb-3 mx-auto">
                                     <i class="fas fa-tint fa-2x text-white"></i>
                                 </div>
-                                <h5 class="card-title">Blood Banks</h5>
-                                <p class="card-text text-muted">Locate blood banks and check inventory</p>
+                                <h5 class="card-title fw-bold">Blood Banks</h5>
+                                <p class="card-text text-muted ">Locate blood banks</p>
+
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'donors_list' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
+
+                <!-- Donors -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
+                        <a href="{% url 'donors_list' %}" class="text-decoration-none text-dark">
                             <div class="card-body text-center p-4">
                                 <div class="icon-circle bg-danger mb-3 mx-auto">
                                     <i class="fas fa-users fa-2x text-white"></i>
                                 </div>
-                                <h5 class="card-title">Donors</h5>
-                                <p class="card-text text-muted">Meet our community of life savers</p>
-                            </div>
-                        </div>
-                    </a>
+                                <h5 class="card-title fw-bold">Donors</h5>
+                                <p class="card-text text-muted ">Our community heroes</p>
+                                </div>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'hospital_list' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
+
+                <!-- Hospitals -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
+                        <a href="{% url 'hospital_list' %}" class="text-decoration-none text-dark">
                             <div class="card-body text-center p-4">
                                 <div class="icon-circle bg-danger mb-3 mx-auto">
                                     <i class="fas fa-hospital fa-2x text-white"></i>
                                 </div>
-                                <h5 class="card-title">Hospitals</h5>
-                                <p class="card-text text-muted">Partner hospitals needing support</p>
+                                <h5 class="card-title fw-bold">Hospitals</h5>
+                                <p class="card-text text-muted ">Partner institutions</p>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <a href="{% url 'initiate_cross_city_donation' %}" class="text-decoration-none">
-                        <div class="card h-100 border-0 shadow-sm hover-effect">
+
+                <!-- Cross-City Donation -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
+                        <a href="{% url 'initiate_cross_city_donation' %}" class="text-decoration-none text-dark">
                             <div class="card-body text-center p-4">
                                 <div class="icon-circle bg-danger mb-3 mx-auto">
-                                    <i class="fas fa-hospital fa-2x text-white"></i>
+                                    <i class="fas fa-exchange-alt fa-2x text-white"></i>
                                 </div>
-                                <h5 class="card-title">Cross-City Donation</h5>
-                                <p class="card-text text-muted">Donate in your city to help patients in another city.</p>
+                                <h5 class="card-title fw-bold">Cross-City</h5>
+                                <p class="card-text text-muted ">Donate locally, help globally</p>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-
     <!-- Blood Compatibility Section -->
-    <section class="py-5 bg-white">
+    <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center text-danger mb-5">Blood Donation Compatibility</h2>
-            <div class="chart" id="chartContainer"></div>
+            <div class="text-center mb-5">
+                <h2 class="text-danger">Blood Donation Compatibility</h2>
+                <p class="text-muted">See which blood types are compatible</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="compatibility-chart-container bg-white p-4 rounded-3 shadow-sm">
+                        <div class="chart" id="chartContainer"></div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button id="showAllBtn" class="btn btn-sm btn-outline-danger">Show All Compatibilities</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
-
-    <!-- Centralized Blood Bank System Section -->
+   <!-- Centralized Blood Bank System Section -->
     <section class="py-5 bg-light">
         <div class="container">
             <div class="row align-items-center">
@@ -226,279 +260,360 @@
     </section>
 
 
-<!-- Blood Donation Info Section -->
+    <!-- Blood Donation Info Section -->
     <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center text-danger mb-5">Want to Know About Blood Donation?</h2>
+            <div class="text-center mb-5">
+                <h2 class="text-danger">Want to Know About Blood Donation?</h2>
+                <p class="text-muted">Everything you need to know about becoming a donor</p>
+            </div>
             <div class="row g-4">
+                <!-- Being a Donor -->
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
                         <div class="card-body text-center p-4">
                             <div class="icon-circle bg-danger mb-3 mx-auto">
                                 <i class="fas fa-user-plus fa-2x text-white"></i>
                             </div>
                             <h5 class="card-title">Being a Donor</h5>
-                            <p class="card-text">Learn about blood donors and their impact</p>
+                            <p class="card-text text-muted">Learn about blood donors and their impact</p>
+                            <a href="{% url 'being_a_donor' %}" class="btn btn-sm btn-outline-danger mt-2">Read More</a>
                         </div>
                     </div>
                 </div>
+
+                <!-- Eligibility Requirements -->
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
                         <div class="card-body text-center p-4">
                             <div class="icon-circle bg-danger mb-3 mx-auto">
                                 <i class="fas fa-check-circle fa-2x text-white"></i>
                             </div>
-                            <h5 class="card-title">Eligibility Requirements</h5>
-                            <p class="card-text">Check if you qualify to donate</p>
+                            <h5 class="card-title">Eligibility</h5>
+                            <p class="card-text text-muted">Check if you qualify to donate</p>
+                            <a href="/main/eligibility" class="btn btn-sm btn-outline-danger mt-2">Read More</a>
                         </div>
                     </div>
                 </div>
+
+                <!-- Donation Process -->
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
                         <div class="card-body text-center p-4">
                             <div class="icon-circle bg-danger mb-3 mx-auto">
                                 <i class="fas fa-procedures fa-2x text-white"></i>
                             </div>
                             <h5 class="card-title">Donation Process</h5>
-                            <p class="card-text">Steps for donating blood safely</p>
+                            <p class="card-text text-muted">Steps for donating blood safely</p>
+                            <a href="{% url 'donation_process' %}" class="btn btn-sm btn-outline-danger mt-2">Read More</a>
                         </div>
                     </div>
                 </div>
+
+                <!-- Any Query -->
                 <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
                         <div class="card-body text-center p-4">
                             <div class="icon-circle bg-danger mb-3 mx-auto">
                                 <i class="fas fa-question-circle fa-2x text-white"></i>
                             </div>
                             <h5 class="card-title">Any Query</h5>
-                            <p class="card-text">Get your questions answered by our experts</p>
+                            <p class="card-text text-muted">Get answers from our experts</p>
+                            <a href="/main/faqs" class="btn btn-sm btn-outline-danger mt-2">Read More</a>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <a href="/about" class="btn btn-outline-danger">Learn More</a>
-            </div>
-        </div>
-    </section>
-    <!-- Donation Types Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h2 class="text-danger mb-4">Types of Blood Donation</h2>
-                    <p class="lead">The human body contains around five liters of blood, consisting of different components:</p>
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="me-3 text-danger">
-                            <i class="fas fa-circle fa-lg"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-1">Whole Blood</h5>
-                            <p class="mb-0">The most common type, containing all blood components</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-start mb-3">
-                        <div class="me-3 text-danger">
-                            <i class="fas fa-circle fa-lg"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-1">Platelets</h5>
-                            <p class="mb-0">Helps cancer patients and those with blood disorders</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-start">
-                        <div class="me-3 text-danger">
-                            <i class="fas fa-circle fa-lg"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-1">Plasma</h5>
-                            <p class="mb-0">Used for trauma and burn patients</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mt-4 mt-lg-0">
-                    <img src="{% static 'images/blood-components.jpg' %}" alt="Blood components"
-                         class="img-fluid rounded shadow">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Blood Compatibility Chart Styles and Script -->
+    <!-- Donation Types Section -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <img src="{% static 'images/blood-components.jpg' %}" alt="Blood components"
+                         class="img-fluid rounded-3 shadow">
+                </div>
+                <div class="col-lg-6 order-lg-1 mt-4 mt-lg-0">
+                    <h2 class="text-danger mb-4">Types of Blood Donation</h2>
+                    <p class="lead mb-4">The human body contains around five liters of blood, consisting of different components:</p>
+
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="me-3 text-danger">
+                            <i class="fas fa-tint fa-lg"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-2">Whole Blood</h5>
+                            <p class="mb-0 text-muted">The most common type, containing all blood components</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="me-3 text-danger">
+                            <i class="fas fa-microscope fa-lg"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-2">Platelets</h5>
+                            <p class="mb-0 text-muted">Helps cancer patients and those with blood disorders</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <div class="me-3 text-danger">
+                            <i class="fas fa-flask fa-lg"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-2">Plasma</h5>
+                            <p class="mb-0 text-muted">Used for trauma and burn patients</p>
+                        </div>
+                    </div>
+
+                    <a href="/main/about" class="btn btn-danger mt-4">Learn More About Donation</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-5 bg-danger text-white">
+        <div class="container text-center">
+            <h2 class="mb-4">Ready to Make a Difference?</h2>
+            <p class="lead mb-4">Your donation can save up to 3 lives. Join our community of heroes today.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'donate' %}" class="btn btn-light btn-lg px-4">Donate Now</a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Styles -->
     <style>
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 100px;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        .wave-divider {
+            height: 100px;
+            transform: rotate(180deg);
+        }
+
+        .wave-divider svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape-fill {
+            fill: #ffffff;
+        }
+
+        /* Card Hover Effects */
+        .hover-effect {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Icon Circles */
+        .icon-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            background-color: #dc3545;
+        }
+
+        .card:hover .icon-circle {
+            transform: scale(1.1);
+            background-color: #c82333 !important;
+        }
+
+        /* Compatibility Chart */
+        .compatibility-chart-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
         .chart {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            gap: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
+            gap: 15px;
+            min-width: min-content;
         }
 
-        .row {
+        .compatibility-row {
             display: flex;
             align-items: center;
-            gap: 14px;
-            flex-wrap: nowrap;
-            width: 100%;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
         }
 
-        .donor, .recipientBall {
-            width: 40px;
-            height: 40px;
+        .compatibility-row:last-child {
+            border-bottom: none;
+        }
+
+        .blood-type {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             color: white;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75em;
-            position: relative;
-            padding: 2px;
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .donor {
-            background-color: #e74c3c;
+            font-size: 0.9rem;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .donor:hover {
+        .donor-type {
+            background-color: #dc3545;
+        }
+
+        .donor-type:hover {
             transform: scale(1.1);
+            background-color: #c82333;
         }
 
-        .recipientContainer {
-            display: flex;
-            gap: 10px;
-            flex-grow: 1;
-            flex-wrap: wrap;
-            opacity: 0;
-            transform: translateX(15px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+        .recipient-type {
+            background-color: #28a745;
         }
 
-        .recipientContainer.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .compatibility-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
 
-        .recipientBall {
-            background-color: #27ae60;
-        }
-
-        .arrow {
-            width: 40px;
-            height: 4px;
-            background-color: #f1c40f;
-            position: relative;
-            animation: flow 2s infinite;
-        }
-
-        .arrow::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: -4px;
-            width: 0;
-            height: 0;
-            border-top: 4px solid transparent;
-            border-bottom: 4px solid transparent;
-            border-left: 8px solid #f1c40f;
-        }
-
-        .tooltip {
-            position: absolute;
-            bottom: 48px;
-            background: rgba(0, 0, 0, 0.75);
-            color: white;
-            font-size: 10px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: none;
-            z-index: 10;
-        }
-
-        .donor:hover .tooltip {
-            display: block;
-        }
-
-        @keyframes flow {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
+            .icon-circle {
+                width: 60px;
+                height: 60px;
+            }
         }
 
         @media (max-width: 768px) {
-            .row {
-                flex-wrap: wrap;
+            .hero-section {
+                padding-bottom: 80px;
             }
 
-            .arrow {
-                display: none;
+            .icon-circle {
+                width: 50px;
+                height: 50px;
             }
+        }
 
-            .recipientContainer {
-                width: 100%;
-                justify-content: center;
-                margin-top: 10px;
-            }
+        /* Animation Classes */
+        .animate__delay-1s {
+            animation-delay: 0.5s;
         }
     </style>
 
+    <!-- Scripts -->
     <script>
-        const compatibility = {
-            "O−": ["O−", "O+", "A−", "A+", "B−", "B+", "AB−", "AB+"],
-            "A−": ["A−", "A+", "AB−", "AB+"],
-            "B−": ["B−", "B+", "AB−", "AB+"],
-            "AB−": ["AB−", "AB+"],
-            "A+": ["A+", "AB+"],
-            "B+": ["B+", "AB+"],
-            "AB+": ["AB+"]
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize compatibility chart
+            const compatibility = {
+                "O−": ["O−", "O+", "A−", "A+", "B−", "B+", "AB−", "AB+"],
+                "O+": ["O+", "A+", "B+", "AB+"],
+                "A−": ["A−", "A+", "AB−", "AB+"],
+                "A+": ["A+", "AB+"],
+                "B−": ["B−", "B+", "AB−", "AB+"],
+                "B+": ["B+", "AB+"],
+                "AB−": ["AB−", "AB+"],
+                "AB+": ["AB+"]
+            };
 
-        const chartContainer = document.getElementById("chartContainer");
+            const chartContainer = document.getElementById("chartContainer");
+            const showAllBtn = document.getElementById("showAllBtn");
 
-        Object.entries(compatibility).forEach(([donor, recipients]) => {
-            const row = document.createElement("div");
-            row.classList.add("row");
+            // Function to create chart
+            function createChart(showAll = false) {
+                chartContainer.innerHTML = '';
 
-            const donorBall = document.createElement("div");
-            donorBall.classList.add("donor");
-            donorBall.textContent = donor;
+                Object.entries(compatibility).forEach(([donor, recipients]) => {
+                    const row = document.createElement("div");
+                    row.classList.add("compatibility-row");
 
-            const tooltip = document.createElement("div");
-            tooltip.classList.add("tooltip");
-            tooltip.textContent = `Click to show compatible recipients`;
+                    const donorElement = document.createElement("div");
+                    donorElement.classList.add("blood-type", "donor-type", "me-2");
+                    donorElement.textContent = donor;
+                    donorElement.title = `Donor: ${donor}`;
 
-            donorBall.appendChild(tooltip);
+                    const arrow = document.createElement("span");
+                    arrow.classList.add("mx-2", "text-muted");
+                    arrow.innerHTML = "&rarr;";
 
-            const arrow = document.createElement("div");
-            arrow.classList.add("arrow");
+                    const recipientsContainer = document.createElement("div");
+                    recipientsContainer.classList.add("d-flex", "flex-wrap", "gap-2");
 
-            const recipientContainer = document.createElement("div");
-            recipientContainer.classList.add("recipientContainer");
+                    if (!showAll) {
+                        recipientsContainer.classList.add("d-none");
+                    }
 
-            recipients.forEach(rec => {
-                const rb = document.createElement("div");
-                rb.classList.add("recipientBall");
-                rb.textContent = rec;
-                recipientContainer.appendChild(rb);
+                    recipients.forEach(rec => {
+                        const rb = document.createElement("div");
+                        rb.classList.add("blood-type", "recipient-type");
+                        rb.textContent = rec;
+                        rb.title = `Can receive from ${donor}`;
+                        recipientsContainer.appendChild(rb);
+                    });
+
+                    donorElement.addEventListener("click", () => {
+                        recipientsContainer.classList.toggle("d-none");
+                    });
+
+                    row.appendChild(donorElement);
+                    row.appendChild(arrow);
+                    row.appendChild(recipientsContainer);
+                    chartContainer.appendChild(row);
+                });
+            }
+
+            // Initial chart creation
+            createChart();
+
+            // Show all button functionality
+            showAllBtn.addEventListener("click", function() {
+                const showAll = !chartContainer.querySelector(".d-none");
+                createChart(!showAll);
+                this.textContent = showAll ? "Show All Compatibilities" : "Hide All";
             });
 
-            donorBall.addEventListener("click", () => {
-                recipientContainer.classList.toggle("show");
-            });
+            // Add animation classes on scroll
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.animate__animated');
 
-            row.appendChild(donorBall);
-            row.appendChild(arrow);
-            row.appendChild(recipientContainer);
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.2;
 
-            chartContainer.appendChild(row);
+                    if (elementPosition < screenPosition) {
+                        element.classList.add('animate__fadeIn');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Run once on page load
         });
     </script>
 {% endblock %}

@@ -748,3 +748,14 @@ def patient_dashboard(request):
     patient = get_object_or_404(Patient, user=request.user)
     return render(request, 'patients/dashboard.html', {'patient': patient})
 
+def being_a_donor(request):
+    return render(request, 'being_a_donor.html')
+
+def eligibility(request):
+    return render(request, 'eligibility.html')
+
+def donation_process(request):
+    return render(request, 'donation_process.html')
+
+def faqs(request):
+    return render(request, 'faqs.html')

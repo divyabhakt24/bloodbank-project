@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Donation Process | Blood Bank{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="text-danger mb-4">Donation Process</h1>
+                <p class="lead">Steps for donating blood safely</p>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="process-step mb-5">
+                                    <div class="step-number bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center">
+                                        1
+                                    </div>
+                                    <h3 class="mt-3 text-danger">Registration</h3>
+                                    <p>Complete the donor registration form with your personal information.</p>
+                                </div>
+
+                                <div class="process-step mb-5">
+                                    <div class="step-number bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center">
+                                        2
+                                    </div>
+                                    <h3 class="mt-3 text-danger">Health Screening</h3>
+                                    <p>Answer confidential questions about your health history and places you've traveled.</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="process-step mb-5">
+                                    <div class="step-number bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center">
+                                        3
+                                    </div>
+                                    <h3 class="mt-3 text-danger">Mini Physical</h3>
+                                    <p>Check your pulse, blood pressure, temperature, and hemoglobin level.</p>
+                                </div>
+
+                                <div class="process-step mb-5">
+                                    <div class="step-number bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center">
+                                        4
+                                    </div>
+                                    <h3 class="mt-3 text-danger">Donation</h3>
+                                    <p>Actual blood donation takes about 8-10 minutes for a whole blood donation.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <img src="{% static 'images/donation-process.jpg' %}" alt="Donation process" class="img-fluid rounded">
+                        </div>
+
+                        <div class="mt-5 text-center">
+                            <a href="{% url 'being_a_donor' %}" class="btn btn-danger me-3">Why Donate?</a>
+                            <a href="{% url 'eligibility' %}" class="btn btn-outline-danger">Check Eligibility</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .process-step {
+        position: relative;
+        padding-left: 70px;
+    }
+    .step-number {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
