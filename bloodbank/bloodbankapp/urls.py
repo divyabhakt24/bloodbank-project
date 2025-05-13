@@ -41,6 +41,10 @@ urlpatterns = [
     # For general blood requests (without specific bank)
     path('request-blood/', views.request_blood, name='request_blood'),
     path('request/<int:request_id>/', views.request_detail, name='request_detail'),
+    path('being-a-donor/', views.being_a_donor, name='being_a_donor'),
+    path('eligibility/', views.eligibility, name='eligibility'),
+    path('donation-process/', views.donation_process, name='donation_process'),
+    path('faqs/', views.faqs, name='faqs'),
 
     # Password reset URLs
     path('password-reset/',
