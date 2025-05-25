@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .request-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    background: #fff;
+    padding: 2.5rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .request-container h2 {
+    font-weight: 700;
+    color: #d32f2f;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .request-container p {
+    color: #555;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  label.form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.4rem;
+  }
+  input[type=number], textarea {
+    border: 2px solid #d32f2f;
+    border-radius: 8px;
+    padding: 0.65rem 0.9rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  input[type=number]:focus, textarea:focus {
+    border-color: #b71c1c;
+    outline: none;
+  }
+  button.btn-primary {
+    background-color: #d32f2f;
+    border-color: #d32f2f;
+    font-weight: 700;
+    padding: 0.65rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(211,47,47,0.5);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  button.btn-primary:hover {
+    background-color: #b71c1c;
+    box-shadow: 0 6px 20px rgba(183,28,28,0.7);
+  }
+  .btn-secondary {
+    background-color: #777;
+    border-color: #777;
+    padding: 0.65rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 8px;
+  }
+  .btn-secondary:hover {
+    background-color: #555;
+    border-color: #555;
+  }
+  .alert {
+    font-weight: 600;
+    border-radius: 10px;
+    text-align: center;
+    padding: 1rem;
+  }
+</style>
+
+<div class="request-container">
+    <h2>Request Blood Donation from {{ donor.name }}</h2>
+
+    <p>Please fill out the form below to request blood from {{ donor.name }}.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="{% url 'request_donor' donor.pk %}" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="units" class="form-label">Number of Units Required:</label>
+            <input type="number" class="form-control" id="units" name="units" min="1" required placeholder="Enter number of units">
+        </div>
+
+        <div class="mb-3">
+            <label for="message" class="form-label">Your Message:</label>
+            <textarea class="form-control" id="message" name="message" rows="4" required placeholder="Enter your message"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="additional_details" class="form-label">Additional Details (optional):</label>
+            <textarea class="form-control" id="additional_details" name="additional_details" rows="2" placeholder="Any additional info"></textarea>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+          <button type="submit" class="btn btn-primary me-3">Send Request</button>
+          <a href="{% url 'donor_detail' donor.pk %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

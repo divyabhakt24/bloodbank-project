@@ -1,8 +1,32 @@
 {% extends 'base.html' %}
+{% block title %}Donor Details{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Donor Details</h2>
-    <!-- Add donor details display here -->
+<div class="container my-5">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">Donor Profile</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ donor.name }}</p>
+            <p><strong>Age:</strong> {{ donor.age }}</p>
+            <p><strong>Blood Group:</strong> {{ donor.blood_group }}</p>
+            <p><strong>Contact Number:</strong> {{ donor.contact_number }}</p>
+            <p><strong>Email:</strong> {{ donor.email }}</p>
+            <p><strong>Address:</strong> {{ donor.address }}</p>
+            <p><strong>Units Donated:</strong> {{ donor.units_donated }}</p>
+            {% if donor.latitude and donor.longitude %}
+            <p><strong>Location:</strong>
+                <a href="https://maps.google.com/?q={{ donor.latitude }},{{ donor.longitude }}"
+                   target="_blank" class="btn btn-outline-danger btn-sm">
+                    View on Map
+                </a>
+            </p>
+            {% endif %}
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'donor_list' %}" class="btn btn-secondary">Back to Donors</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

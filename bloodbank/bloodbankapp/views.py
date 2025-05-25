@@ -20,7 +20,9 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from geopy.distance import geodesic
 from .notifications import send_donation_initiated_notification
+from django.core.mail import send_mail
 from .utils import get_user_display_name
+from django.conf import settings
 
 
 def home(request):
@@ -377,12 +379,37 @@ def donor_detail(request, pk):
 
 def donor_edit(request, pk):
     donor = get_object_or_404(BloodDonor, pk=pk)
-    # Add your edit form logic here
-    return render(request, 'donor_edit.html', {'donor': donor})
+    if request.method == 'POST':
+        form = BloodDonorForm(request.POST, instance=donor)
+        if form.is_valid():
+            form.save()
+            return redirect('donor_detail', pk=donor.pk)
+    else:
+        form = BloodDonorForm(instance=donor)
+    return render(request, 'donor_edit.html', {'form': form, 'donor': donor})
 
 def request_donor(request, pk):
     donor = get_object_or_404(BloodDonor, pk=pk)
-    # Add your request logic here
+
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        subject = f"Blood Donation Request from {request.user.username}"
+        recipient = donor.email
+
+        if recipient:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [recipient],
+                fail_silently=False,
+            )
+            messages.success(request, "Your request has been sent to the donor.")
+        else:
+            messages.error(request, "This donor does not have an email address.")
+
+        return redirect('donor_detail', pk=donor.pk)
+
     return render(request, 'request_donor.html', {'donor': donor})
 
 def request_detail(request, request_id):
