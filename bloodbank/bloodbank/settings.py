@@ -157,5 +157,5 @@ EMAIL_HOST = 'smtp.gmail.com'  # For Gmail, change for other providers
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'bhaktdivya02@gmail.com'  # Your email address
-EMAIL_HOST_PASSWORD = 'bloodbank'  # Use app password for Gmail
+EMAIL_HOST_PASSWORD = 'pfzq ltkx hjpk fbus'  # Use app password for Gmail
 DEFAULT_FROM_EMAIL = 'divyabhakt24@gmail.com'

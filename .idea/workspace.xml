@@ -5,27 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="778ac18e-a4bc-4347-a700-34c26d5873fc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/bloodbank/app_schema.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbank/d.pub.pub" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/data/imports/indiacities.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/migrations/0016_userprofile_city.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/migrations/0017_bloodbank_city.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/migrations/0018_userprofile_name.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/notifications.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/request_detail.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloodbank/schema.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bloodbank/bloodbank/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbank/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/data/imports/.~lock.blood-banks.csv#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/import_cities_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/management/commands/import_cities_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/cross_city_donation/initiate.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/cross_city_donation/initiate.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/my_blood_requests.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/my_blood_requests.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/donor_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/donor_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/donor_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/donor_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/request_donor.html" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/request_donor.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bloodbank/bloodbankapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/bloodbank/bloodbankapp/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,16 +34,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;divya&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/divya/PycharmProjects/quiz-application&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.Python tests for bloodbankapp.tests.CampRegistrationTestCase.test_camp_registration.executor": "Run",
+    "Python.scratch.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "divya",
+    "last_opened_file_path": "/home/divya/PycharmProjects/BloodBank/bloodbank/static/images"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "Python"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/bloodbank/static/images" />
       <recent name="$PROJECT_DIR$/bloodbank/bloodbankapp/data/imports" />
       <recent name="$PROJECT_DIR$/bloodbank/bloodbankapp/data" />
       <recent name="$PROJECT_DIR$/bloodbank" />
@@ -67,10 +61,32 @@
       <recent name="$PROJECT_DIR$/bloodbank/bloodbankapp/templates/static/css" />
     </key>
   </component>
+  <component name="RunManager">
+    <configuration name="Python tests for bloodbankapp.tests.CampRegistrationTestCase.test_camp_registration" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="BloodBank" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bloodbank" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;bloodbankapp.tests.CampRegistrationTestCase.test_camp_registration&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python tests.Python tests for bloodbankapp.tests.CampRegistrationTestCase.test_camp_registration" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-348a24fa61fa-5312c7369657-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.23774.444" />
+        <option value="bundled-python-sdk-dfff61a61320-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.25410.159" />
       </set>
     </attachedChunks>
   </component>
